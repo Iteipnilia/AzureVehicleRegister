@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DB-VehicleRegistry" Class="AzureDbAccessDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=vehicleregistry.database.windows.net;Initial Catalog=DB-VehicleRegistry;Persist Security Info=True;User ID=ea.newton.OP2;MultipleActiveResultSets=False;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;Application Name=&quot;Microsoft SQL Server Data Tools, SQL Server Object Explorer&quot;" SettingsObjectName="VehicleRegister.Repository.Properties.Settings" SettingsPropertyName="DB_VehicleRegistryConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.ApiUsers" Member="ApiUsers">
+    <Type Name="ApiUser">
+      <Column Name="UserId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserName" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="UserPasswd" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="UserRole" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Vehicle" Member="Vehicles">
+    <Type Name="Vehicle">
+      <Column Name="VehicleId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RegestrationNumber" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Model" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="Brand" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="Vehicle_Type" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="Weight_" Type="System.Decimal" DbType="Decimal(18,0) NOT NULL" CanBeNull="false" />
+      <Column Name="IsRegistered" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="YearlyFee" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Column Name="VehicleService" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FirstUseInTraffic" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ServiceHistory" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Association Name="Vehicle_VehicleService" Member="VehicleServices" ThisKey="VehicleId" OtherKey="VehicleId" Type="VehicleService" />
+      <Association Name="VehicleService_Vehicle" Member="VehicleService1" ThisKey="VehicleService" OtherKey="VehicleServiceId" Type="VehicleService" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.VehicleService" Member="VehicleServices">
+    <Type Name="VehicleService">
+      <Column Name="VehicleServiceId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="VehicleId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ServiceDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="VehicleService_Type" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="IsServiceCompleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="VehicleService_Vehicle" Member="Vehicles" ThisKey="VehicleServiceId" OtherKey="VehicleService" Type="Vehicle" />
+      <Association Name="Vehicle_VehicleService" Member="Vehicle" ThisKey="VehicleId" OtherKey="VehicleId" Type="Vehicle" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
