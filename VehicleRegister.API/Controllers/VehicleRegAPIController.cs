@@ -67,9 +67,10 @@ namespace VehicleRegister.API.Controllers
  
         //=======GET=ALL=====================================================
         
-        [Authorize(Roles = "Admin, SuperaAmin")]
+        //[Authorize(Roles = "Admin, SuperaAmin")]
         [HttpGet]
-        [Route("api/vehicles")]
+        [AllowAnonymous]
+        [Route("api/getallvehicles")]
         public IHttpActionResult GetAllVehicles()
         {
             var response = new GetAllVehiclesResponseDto();
@@ -83,7 +84,8 @@ namespace VehicleRegister.API.Controllers
                     Brand = vehicle.Brand,
                     VehicleType = vehicle.VehicleType,
                     Weight = vehicle.Weight,
-                    BookedService = vehicle.BookedService,
+                    YearlyFee = vehicle.YearlyFee,
+                    //BookedService = vehicle.BookedService,
                     FirstUseInTraffic = vehicle.FirstUseInTraffic
                 });
             }
@@ -128,7 +130,7 @@ namespace VehicleRegister.API.Controllers
                 Brand = vehicle.Brand,
                 VehicleType = vehicle.VehicleType,
                 Weight = vehicle.Weight,
-                BookedService = vehicle.BookedService,
+                //BookedService = vehicle.BookedService,
                 FirstUseInTraffic = vehicle.FirstUseInTraffic
             };
             return Ok(respons);
@@ -155,7 +157,7 @@ namespace VehicleRegister.API.Controllers
 
         [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpPut]
-        [Route("api/vehicle/")]
+        [Route("api/updatevehicle")]
         public IHttpActionResult UpdateVehicle(VehicleDto vehicle)
         {
             var update = vehicleRepository_.Update((IVehicle)vehicle);
@@ -177,7 +179,8 @@ namespace VehicleRegister.API.Controllers
         
         [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpPut]
-        [Route("api/vehicle/{id}")]
+        [AllowAnonymous]
+        [Route("api/deletevehicle/{id}")]
         public IHttpActionResult DeleteVehicle(int vehicleId)
         {
             vehicleRepository_.DeleteVehicle(vehicleId);

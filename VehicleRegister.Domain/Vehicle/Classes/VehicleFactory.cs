@@ -10,7 +10,7 @@ namespace VehicleRegister.Domain.Vehicle.Classes
 {
     public class VehicleFactory
     {
-        public IVehicle CreateVehicle(int vehicleId, string registrationNumber, string model, string brand, double weight, bool isRegistered,
+        public IVehicle CreateVehicle(int vehicleId, string registrationNumber, string model, string brand, double weight, bool? isRegistered,
                                IVehicleService bookedService, DateTime firstUseInTraffic)
         {
             switch (weight)
@@ -26,5 +26,6 @@ namespace VehicleRegister.Domain.Vehicle.Classes
                                             bookedService, firstUseInTraffic);
             }
         }
+
     }
 }

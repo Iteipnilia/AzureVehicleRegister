@@ -16,7 +16,7 @@ namespace VehicleRegister.Domain.Vehicle.Classes
         protected string brand { get; set; }
         protected string vehicleType { get; set; }
         protected double weight { get; set; }
-        protected bool isRegistered { get; set; }
+        protected bool? isRegistered { get; set; }
         protected double yearlyFee { get; set; }
         protected IVehicleService bookedService { get; set; }
         protected DateTime firstUseInTraffic { get; set; }
@@ -28,13 +28,13 @@ namespace VehicleRegister.Domain.Vehicle.Classes
         public string Brand => brand;
         public string VehicleType => vehicleType;
         public double Weight => weight;
-        public bool IsRegistered => isRegistered;
+        public bool? IsRegistered => isRegistered;
         public double YearlyFee => yearlyFee;
         public IVehicleService BookedService => bookedService;
         public DateTime FirstUseInTraffic => firstUseInTraffic;
         public List<IVehicleService> ServiceHistory => serviceHistory;
 
-        public Vehicle(int vehicleId, string registrationNumber, string model, string brand, double weight, bool isRegistered,
+        public Vehicle(int vehicleId, string registrationNumber, string model, string brand, double weight, bool? isRegistered,
                        IVehicleService bookedService, DateTime firstUseInTraffic)
         {
             this.vehicleId = vehicleId;

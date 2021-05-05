@@ -15,6 +15,7 @@ namespace VehicleRegister.Repository.Repos
     public class AzureSqlDataStorage : IVehicleRepository, IVehicleServiceRepository
     {
         private readonly AzureDbAccessDataContext datacontext;
+
         //private readonly ILogger _logger;
 
         public AzureSqlDataStorage()
@@ -100,8 +101,9 @@ namespace VehicleRegister.Repository.Repos
                                                                 entity.Model,
                                                                 entity.Brand,
                                                                 (Double)entity.Weight_,
-                                                                (bool)entity.IsRegistered,
-                                                                VehicleServiceGetByVehicleId(entity.VehicleId),
+                                                                entity.IsRegistered,
+                                                                null,
+                                                                //VehicleServiceGetByVehicleId(entity.VehicleId),
                                                                 (DateTime)entity.FirstUseInTraffic);
 
                 vehicleList.Add(vehicle);

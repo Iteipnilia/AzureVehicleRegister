@@ -15,7 +15,7 @@ namespace VehicleRegister.Domain.Vehicle.Interfaces
         string Brand { get; }
         string VehicleType { get; }
         double Weight { get; }
-        bool IsRegistered { get; }
+        bool? IsRegistered { get; }
         double YearlyFee { get; }
         IVehicleService BookedService { get; }
         DateTime FirstUseInTraffic { get; }

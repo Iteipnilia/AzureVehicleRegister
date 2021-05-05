@@ -11,7 +11,7 @@ namespace VehicleRegister.Domain.Vehicle.Classes
     {
         private double lightVehicleYearlyFee = 1200;
 
-        public LightVehicle(int vehicleId, string registrationNumber, string model, string brand, double weight, bool isRegistered,
+        public LightVehicle(int vehicleId, string registrationNumber, string model, string brand, double weight, bool? isRegistered,
                              IVehicleService bookedService, DateTime firstUseInTraffic) : base(vehicleId, registrationNumber, model,
                              brand, weight, isRegistered, bookedService, firstUseInTraffic)
         {
