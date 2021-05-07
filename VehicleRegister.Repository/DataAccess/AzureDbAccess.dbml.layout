@@ -8,30 +8,30 @@
         <elementListCompartment Id="76ef6a51-940d-49c5-98e8-3e38a3fe1980" absoluteBounds="0.51499999999999968, 1.835, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="ab1be7db-f049-4117-9c07-071595e7ac7b" absoluteBounds="3.375, 1.125, 2, 2.9247054036458331">
-      <DataClassMoniker Name="/AzureDbAccessDataContext/Vehicle" />
-      <nestedChildShapes>
-        <elementListCompartment Id="1a53e09a-5254-49be-b8c3-8c540433f66f" absoluteBounds="3.3899999999999997, 1.585, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
     <classShape Id="056e8b3d-e604-4f75-9b4f-9da80db1debf" absoluteBounds="6.5, 1.25, 2, 1.7708968098958331">
       <DataClassMoniker Name="/AzureDbAccessDataContext/VehicleService" />
       <nestedChildShapes>
         <elementListCompartment Id="4bf8e14a-8a9c-46d0-8140-448e685ea33a" absoluteBounds="6.5150000000000006, 1.71, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(6.5 : 2.13544840494792); (5.375 : 2.13544840494792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <classShape Id="9580a47a-dac8-4a05-b753-4f67430701b5" absoluteBounds="3.625, 1.25, 2, 2.9247054036458331">
+      <DataClassMoniker Name="/AzureDbAccessDataContext/Vehicle" />
+      <nestedChildShapes>
+        <elementListCompartment Id="5948ba6f-05bf-4fae-b08c-08b1c81edcff" absoluteBounds="3.6399999999999997, 1.71, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(5.625 : 2.13544840494792); (6.5 : 2.13544840494792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/AzureDbAccessDataContext/Vehicle/Vehicle_VehicleService" />
+      <nodes>
+        <classShapeMoniker Id="9580a47a-dac8-4a05-b753-4f67430701b5" />
+        <classShapeMoniker Id="056e8b3d-e604-4f75-9b4f-9da80db1debf" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(6.5 : 1.63022420247396); (5.625 : 1.63022420247396)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/AzureDbAccessDataContext/VehicleService/VehicleService_Vehicle" />
       <nodes>
         <classShapeMoniker Id="056e8b3d-e604-4f75-9b4f-9da80db1debf" />
-        <classShapeMoniker Id="ab1be7db-f049-4117-9c07-071595e7ac7b" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(5.375 : 1.63022420247396); (6.5 : 1.63022420247396)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/AzureDbAccessDataContext/Vehicle/Vehicle_VehicleService" />
-      <nodes>
-        <classShapeMoniker Id="ab1be7db-f049-4117-9c07-071595e7ac7b" />
-        <classShapeMoniker Id="056e8b3d-e604-4f75-9b4f-9da80db1debf" />
+        <classShapeMoniker Id="9580a47a-dac8-4a05-b753-4f67430701b5" />
       </nodes>
     </associationConnector>
   </nestedChildShapes>

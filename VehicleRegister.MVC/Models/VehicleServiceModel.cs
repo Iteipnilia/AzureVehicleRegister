@@ -9,6 +9,9 @@ namespace VehicleRegister.MVC.Models
     public class VehicleServiceModel
     {
         [Required]
+        [Display(Name = "Vehicle id:")]
+        public int VehicleId { get; set; }
+        [Required]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         [Display(Name = "Date of Service:")]

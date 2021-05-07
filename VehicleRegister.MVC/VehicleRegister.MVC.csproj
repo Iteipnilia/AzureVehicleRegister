@@ -396,7 +396,7 @@
     <Content Include="Views\Vehicle\DeleteVehicle.cshtml" />
     <Content Include="Views\Vehicle\UpdateVehicle.cshtml" />
     <Content Include="Views\Vehicle\DetailVehicle.cshtml" />
-    <Content Include="Views\VehicleService\BookVehicleService.cshtml" />
+    <Content Include="Views\Vehicle\BookVehicleService.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">
@@ -429,7 +429,9 @@
       <Name>VehicleRegister.DTO</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\VehicleService\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

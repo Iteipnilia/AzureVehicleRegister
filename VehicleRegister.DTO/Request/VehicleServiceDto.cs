@@ -9,6 +9,7 @@ namespace VehicleRegister.DTO.Request
     public class VehicleServiceDto
     {
         public int VehicleServiceId { get; set; }
+        public VehicleDto Vehicle { get; set; }
         public DateTime ServiceDate { get; set; }
         public string ServiceType { get; set; }
         public bool IsServiceCompleted { get; set; }

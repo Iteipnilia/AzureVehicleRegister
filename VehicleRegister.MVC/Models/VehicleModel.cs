@@ -28,7 +28,7 @@ namespace VehicleRegister.MVC.Models
         [Display(Name = "Yearly fee:")]
         public double YearlyFee { get; set; }
         [Display(Name = "Booked service:")]
-        public IVehicleService BookedService { get; set; }
+        public VehicleServiceModel BookedService { get; set; }
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]

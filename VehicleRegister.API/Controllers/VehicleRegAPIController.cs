@@ -49,10 +49,11 @@ namespace VehicleRegister.API.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "User, Admin, Superadmin")]
+        //[Authorize(Roles = "User, Admin, Superadmin")]
         [HttpPost]
-        [Route("api/vehicleservice")]
-        public IHttpActionResult CreateVehicleService(VehicleServiceDto request, int customerId, int vehicleId)
+        [AllowAnonymous]
+        [Route("api/bookvehicleservice")]
+        public IHttpActionResult CreateVehicleService(VehicleServiceDto request)
         {
             VehicleServiceFactory vehicleServiceFactory = new VehicleServiceFactory();
             IVehicleService vehicleService = vehicleServiceFactory.CreateService(request.VehicleServiceId,
@@ -60,7 +61,7 @@ namespace VehicleRegister.API.Controllers
                                                                                  request.ServiceType,
                                                                                  request.IsServiceCompleted);
 
-            vehicleServiceRepository_.Create(vehicleService, vehicleId, customerId);
+            vehicleServiceRepository_.Create(vehicleService, request.Vehicle.VehicleId);
 
             return Ok();
         }
@@ -115,23 +116,24 @@ namespace VehicleRegister.API.Controllers
    
         //=======GET=BY=ID====================================================
         
-        [Authorize(Roles = "User, Admin, SuperAdmin")]
+        //[Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpGet]
-        [Route("api/vehicle/{id}")]
-        public IHttpActionResult GetVehicleById(int vehicleId)
+        [AllowAnonymous]
+        [Route("api/getvehicle")]
+        public IHttpActionResult GetVehicleById(VehicleDto vehicle)
         {
-            var vehicle = vehicleRepository_.GetById(vehicleId);
+            var getvehicle = vehicleRepository_.GetById(vehicle.VehicleId);
 
             var respons = new VehicleDto()
             {
-                VehicleId = vehicle.VehicleId,
-                RegistrationNumber = vehicle.RegistrationNumber,
-                Model = vehicle.Model,
-                Brand = vehicle.Brand,
-                VehicleType = vehicle.VehicleType,
-                Weight = vehicle.Weight,
+                VehicleId = getvehicle.VehicleId,
+                RegistrationNumber = getvehicle.RegistrationNumber,
+                Model = getvehicle.Model,
+                Brand = getvehicle.Brand,
+                VehicleType = getvehicle.VehicleType,
+                Weight = getvehicle.Weight,
                 //BookedService = vehicle.BookedService,
-                FirstUseInTraffic = vehicle.FirstUseInTraffic
+                FirstUseInTraffic = getvehicle.FirstUseInTraffic
             };
             return Ok(respons);
         }

@@ -30,7 +30,7 @@ namespace VehicleRegister.MVC.Controllers
             return View(vehicle);
         }
 
-        //=======CREATE===========================
+        //=======CREATE=VEHICLE==========================
         public ActionResult CreateVehicle()
         {
             return View();
@@ -67,7 +67,7 @@ namespace VehicleRegister.MVC.Controllers
             return View("Success");
         }
 
-        //==============GET=ALL============================
+        //==============GET=ALL=VEHICLES===========================
         public ActionResult GetAllVehicles()
         {
             var vehicleList = new List<VehicleModel>();
@@ -101,18 +101,18 @@ namespace VehicleRegister.MVC.Controllers
             return View(vehicleList);
         }
 
-        //============GET=BY=ID=======================================
+        //============GET=VEHICLE=BY=ID=======================================
         public ActionResult GetVehicleById()
         {
             return View("GetVehicleById");
         }
         [HttpPost]
-        public ActionResult GetVehicleById(GetVehicleByIdModel id)
+        public ActionResult GetVehicleById(VehicleModel vehiclebyid)
         {
             var vehicleList = new List<VehicleModel>();
             var request = new VehicleDto
             {
-                VehicleId = id.VehicleId
+                VehicleId = vehiclebyid.VehicleId
             };
 
             string jsonrequest = JsonConvert.SerializeObject(request);
@@ -123,8 +123,8 @@ namespace VehicleRegister.MVC.Controllers
                 var response = client.PostAsync(new Uri(_endpoints.GetVehicle), httpcontent).Result;
                 if (response != null)
                 {
-                    var jsonGetCustomer = response.Content.ReadAsStringAsync().Result;
-                    var responseDto = JsonConvert.DeserializeObject<VehicleDto>(jsonGetCustomer);
+                    var jsonGetVehicle = response.Content.ReadAsStringAsync().Result;
+                    var responseDto = JsonConvert.DeserializeObject<VehicleDto>(jsonGetVehicle);
 
                     var result = new VehicleModel
                     {
@@ -143,11 +143,10 @@ namespace VehicleRegister.MVC.Controllers
                     ViewBag.Message = vehicleList;
                 }
             }
-            VehicleModel model = vehicleList[0];// NEJ :(
-            return View("DetailVehicle", model);
+            return View("DetailVehicle", vehicleList.First());
         }
 
-        //==========DELETE=====================================
+        //==========DELETE=VEHICLE====================================
         public ActionResult DeleteVehicle(VehicleModel vehicle)
         {
             return View(vehicle);
@@ -213,5 +212,53 @@ namespace VehicleRegister.MVC.Controllers
             ViewBag.Message = "Vehicle has been updated";
             return View("Success");
         }
+
+        //=================================================================
+        //   VEHICLESERVICE CONTROLLERS
+        // 
+        //=================================================================
+
+
+        //============BOOK=VEHICLESERVICE===============================
+        public ActionResult BookVehicleService(VehicleModel getvehicleid)
+        {
+            VehicleServiceModel vehicleService = new VehicleServiceModel { VehicleId = getvehicleid.VehicleId };
+            return View("BookVehicleService", vehicleService);
+        }
+        [HttpPost]
+        public ActionResult BookVehicleService(VehicleServiceModel service)
+        {
+            var createTempVehicle = new VehicleDto { VehicleId = service.VehicleId };
+            var createVehicleServiceRequest = new VehicleServiceDto
+            {
+                Vehicle = createTempVehicle,
+                ServiceDate = service.ServiceDate,
+                ServiceType = service.ServiceType
+            };
+
+            string jsonCreateVehicleService = JsonConvert.SerializeObject(createVehicleServiceRequest);
+            var httpContent = new StringContent(jsonCreateVehicleService, Encoding.UTF8, "application/json");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var response = client.PostAsync(new Uri(_endpoints.CreateVehicleService), httpContent).Result;
+
+                if (response == null)
+                {
+                    return View("About");
+                }
+                else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    return View("Error");
+            }
+            
+            ViewBag.Message("Service has been booked");
+            return View("Success");
+        }
+        
+        // SE TILL ATT DET INTE GÅR ATT BOKA EN SERVICE OM EN REDAN ÄR BOKAD
+        // MÅSTE AVBOKA FÖRST; TA BORT BOKNINGEN HELT
+        // LÄGGA TILL EN TABLE SOM HETER SERVICE HISTORY
+        // TRIGGER SOM AUTOMATISKT ÖVERFÖR INFO OM IsServiceComplete==true
+        // RADERAR FRÅN VEHICLE OCH VEHICLESERVICE
     }
 }

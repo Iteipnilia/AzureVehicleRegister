@@ -77,9 +77,11 @@
         </dd>
 
     </dl>
+
+    <p>
+        @Html.ActionLink("Servicehistory", "ServiceHistory", new { Model.VehicleId }) |
+        @Html.ActionLink("Book service", "BookVehicleService", new { Model.VehicleId }) |
+        @Html.ActionLink("Back to List", "GetAllVehicles")
+    </p>
 </div>
-<p>
-    @Html.ActionLink("Servicehistory", "ServiceHistory", new { /* id = Model.PrimaryKey */ }) |
-    @Html.ActionLink("Book service", "BookVehicleService", new { /* id = Model.PrimaryKey */ }) |
-    @Html.ActionLink("Back to List", "GetAllVehicles")
-</p>
+

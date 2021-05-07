@@ -9,7 +9,7 @@ namespace VehicleRegister.Repository.Interfaces
 {
     public interface IVehicleServiceRepository
     {
-        void Create(IVehicleService service, int vehicleId, int customerId);
+        void Create(IVehicleService service, int vehicleId);
         IVehicleService GetById(int serviceId);
         IEnumerable<IVehicleService> GetAllVehicleServices();
         IVehicleService Update(IVehicleService service);

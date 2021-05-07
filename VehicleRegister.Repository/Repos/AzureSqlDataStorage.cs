@@ -49,8 +49,9 @@ namespace VehicleRegister.Repository.Repos
         }
 
         //=====VEHICLESERVICE=================================================================================
-        public void Create(IVehicleService service, int vehicleId, int customerId)
+        public void Create(IVehicleService service, int vehicleId)
         {
+            if (vehicleId <1) { throw new NullReferenceException(); }
             var newVehicleService = new VehicleService
             {
                 VehicleServiceId = service.ServiceId,
@@ -58,9 +59,10 @@ namespace VehicleRegister.Repository.Repos
                 ServiceDate = service.ServiceDate,
                 VehicleService_Type = service.ServiceType
             };
+
             datacontext.VehicleServices.InsertOnSubmit(newVehicleService);
             datacontext.SubmitChanges();
-        }
+        }// Måste se till att det inte går att boka tid om en tid redan finns
 
         //==============\\
         //===>DELETE<===\\
@@ -163,7 +165,7 @@ namespace VehicleRegister.Repository.Repos
                                                             getVehicle.Brand,
                                                             (double)getVehicle.Weight_,
                                                             (bool)getVehicle.IsRegistered,
-                                                            VehicleServiceGetByVehicleId(vehicleId),
+                                                            null,//VehicleServiceGetByVehicleId(vehicleId),
                                                             (DateTime)getVehicle.FirstUseInTraffic);// MÅSTE HÄMTA LISTA
 
             return vehicle;

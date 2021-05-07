@@ -8,39 +8,24 @@
     <div class="form-horizontal">
         <h4>Edit Vehicle</h4>
         <hr />
-
-        <dt>
+        <div class="form-group">
+            
             @Html.DisplayNameFor(model => model.VehicleId)
-        </dt>
 
-        <dd>
             @Html.DisplayFor(model => model.VehicleId)
-        </dd>
 
-        <dt>
             @Html.DisplayNameFor(model => model.VehicleType)
-        </dt>
 
-        <dd>
             @Html.DisplayFor(model => model.VehicleType)
-        </dd>
 
-        <dt>
             @Html.DisplayNameFor(model => model.Weight)
-        </dt>
 
-        <dd>
             @Html.DisplayFor(model => model.Weight)
-        </dd>
 
-        <dt>
             @Html.DisplayNameFor(model => model.YearlyFee)
-        </dt>
 
-        <dd>
             @Html.DisplayFor(model => model.YearlyFee)
-        </dd>
-
+        </div>
         <div class="form-group">
             @Html.LabelFor(model => model.RegistrationNumber, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
