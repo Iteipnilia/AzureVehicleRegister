@@ -34,8 +34,8 @@ namespace VehicleRegister.Domain.Vehicle.Classes
         public DateTime FirstUseInTraffic => firstUseInTraffic;
         public List<IVehicleService> ServiceHistory => serviceHistory;
 
-        public Vehicle(int vehicleId, string registrationNumber, string model, string brand, double weight, bool? isRegistered,
-                       IVehicleService bookedService, DateTime firstUseInTraffic)
+        public Vehicle(int vehicleId, string registrationNumber, string model, string brand, 
+                       double weight, bool? isRegistered, DateTime firstUseInTraffic)
         {
             this.vehicleId = vehicleId;
             this.registrationNumber = registrationNumber;
@@ -43,9 +43,7 @@ namespace VehicleRegister.Domain.Vehicle.Classes
             this.brand = brand;
             this.weight = weight;
             this.isRegistered = isRegistered;
-            this.bookedService = bookedService;
             this.firstUseInTraffic = firstUseInTraffic;
-            //this.serviceHistory = serviceHistory;
         }
 
         public void RegisterVehicle()

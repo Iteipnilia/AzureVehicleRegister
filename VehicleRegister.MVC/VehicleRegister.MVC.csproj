@@ -397,6 +397,9 @@
     <Content Include="Views\Vehicle\UpdateVehicle.cshtml" />
     <Content Include="Views\Vehicle\DetailVehicle.cshtml" />
     <Content Include="Views\Vehicle\BookVehicleService.cshtml" />
+    <Content Include="Views\Vehicle\GetAllVehicleServices.cshtml" />
+    <Content Include="Views\Vehicle\ServiceHistory.cshtml" />
+    <Content Include="Views\Vehicle\UpdateVehicleService.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">

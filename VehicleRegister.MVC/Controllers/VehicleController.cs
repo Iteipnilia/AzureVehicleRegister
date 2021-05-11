@@ -136,7 +136,6 @@ namespace VehicleRegister.MVC.Controllers
                         Weight = responseDto.Weight,
                         IsRegistered = responseDto.IsRegistered,
                         YearlyFee = responseDto.YearlyFee,
-                        //BookedService = responseDto.BookedService,
                         FirstUseInTraffic = responseDto.FirstUseInTraffic
                     };
                     vehicleList.Add(result);
@@ -177,7 +176,7 @@ namespace VehicleRegister.MVC.Controllers
             return View("Success");
         }
 
-        //==========UPDATE===============================================
+        //==========UPDATE=VEHICLE==============================================
 
         public ActionResult UpdateVehicle(UpdateVehicleModel vehicle)
         {
@@ -228,12 +227,13 @@ namespace VehicleRegister.MVC.Controllers
         [HttpPost]
         public ActionResult BookVehicleService(VehicleServiceModel service)
         {
-            var createTempVehicle = new VehicleDto { VehicleId = service.VehicleId };
+            //var createTempVehicle = new VehicleDto { VehicleId = service.VehicleId };
             var createVehicleServiceRequest = new VehicleServiceDto
             {
-                Vehicle = createTempVehicle,
+                VehicleId = service.VehicleId,
                 ServiceDate = service.ServiceDate,
-                ServiceType = service.ServiceType
+                ServiceType = service.ServiceType,
+                IsServiceCompleted= false
             };
 
             string jsonCreateVehicleService = JsonConvert.SerializeObject(createVehicleServiceRequest);
@@ -255,10 +255,146 @@ namespace VehicleRegister.MVC.Controllers
             return View("Success");
         }
         
+        //========GET=ALL=VEHICLESERVICES==================================
+
+        // GET ALL ACTIVE SERVICES
+        public ActionResult GetAllBookedServices()
+        {
+            var vehicleServiceList = new List<GetAllVehicleServicesModel>();
+            using (HttpClient client = new HttpClient())
+            {
+                var response = client.GetAsync(new Uri(_endpoints.GetActiveVehicleServices)).Result;
+                if (response != null)
+                {
+                    var jsonGetVehicleServices = response.Content.ReadAsStringAsync().Result;
+                    var responseDto = JsonConvert.DeserializeObject<GetAllVehicleServicesResponseDto>(jsonGetVehicleServices);
+
+                    foreach (var service in responseDto.VehicleServices)
+                    {
+                        var vehicleServices = new GetAllVehicleServicesModel
+                        {
+                            VehicleId = service.VehicleId,
+                            ServiceDate = service.ServiceDate,
+                            ServiceType = service.ServiceType
+                        };
+                        vehicleServiceList.Add(vehicleServices);
+                    }
+                    ViewBag.Message = vehicleServiceList;
+                }
+            }
+            return View("GetAllVehicleServices", vehicleServiceList);
+        }
+
+        // GET ALL FINNISHED SERVICES
+        public ActionResult GetAllServiceHistories()
+        {
+            var vehicleServiceList = new List<GetAllVehicleServicesModel>();
+            using (HttpClient client = new HttpClient())
+            {
+                var response = client.GetAsync(new Uri(_endpoints.GetFinnishedVehicleServices)).Result;
+                if (response != null)
+                {
+                    var jsonGetVehicleServices = response.Content.ReadAsStringAsync().Result;
+                    var responseDto = JsonConvert.DeserializeObject<GetAllVehicleServicesResponseDto>(jsonGetVehicleServices);
+
+                    foreach (var service in responseDto.VehicleServices)
+                    {
+                        var result = new GetAllVehicleServicesModel
+                        {
+                            VehicleId = service.Vehicle.VehicleId,
+                            ServiceDate = service.ServiceDate,
+                            ServiceType = service.ServiceType
+                        };
+                        vehicleServiceList.Add(result);
+                    }
+                    ViewBag.Message = vehicleServiceList;
+                }
+            }
+            return View("ServiceHistory ", vehicleServiceList);
+        }
+
+        public ActionResult GetOneVehiclesServiceHistory(VehicleModel vehicle)
+        {
+            var request = new VehicleDto
+            {
+                VehicleId = vehicle.VehicleId
+            };
+
+            string jsonrequest = JsonConvert.SerializeObject(request);
+            var httpcontent = new StringContent(jsonrequest, Encoding.UTF8, "application/json");
+
+            var vehicleServiceList = new List<GetAllVehicleServicesModel>();
+            using (HttpClient client = new HttpClient())
+            {
+                var response = client.PostAsync(new Uri(_endpoints.GetVehiclesServiceHistory), httpcontent).Result;
+                if (response != null)
+                {
+                    var jsonGetVehicleServices = response.Content.ReadAsStringAsync().Result;
+                    var responseDto = JsonConvert.DeserializeObject<GetAllVehicleServicesResponseDto>(jsonGetVehicleServices);
+
+                    foreach (var service in responseDto.VehicleServices)
+                    {
+                        var result = new GetAllVehicleServicesModel
+                        { 
+                            VehicleServiceId = service.VehicleServiceId,
+                            VehicleId = service.Vehicle.VehicleId,
+                            ServiceDate = service.ServiceDate,
+                            ServiceType = service.ServiceType
+                        };
+                        vehicleServiceList.Add(result);
+                    }
+                    ViewBag.Message = vehicleServiceList;
+                }
+            }
+            return View("ServiceHistory", vehicleServiceList);
+        }
+
+        public ActionResult GetVehicleServiceById()
+        {
+            return View();
+        }
+
+        public ActionResult UpdateVehicleService(VehicleServiceModel vehicleService)
+        {
+            return View("UpdateVehicleService", vehicleService);
+        }
+        [HttpPost]
+        public ActionResult UpdateVehicleService(UpdateVehicleServiceModel updateService)
+        {
+            var vehicleServiceUpdateRequest = new VehicleServiceDto
+            {
+                VehicleServiceId = updateService.VehicleServiceId,
+                ServiceDate = updateService.ServiceDate,
+                ServiceType = updateService.ServiceType,
+                IsServiceCompleted = updateService.IsServiceCompleted
+            };
+            string jsonCreateCustomer = JsonConvert.SerializeObject(vehicleServiceUpdateRequest);
+            var httpContent = new StringContent(jsonCreateCustomer, Encoding.UTF8, "application/json");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var response = client.PostAsync(new Uri(_endpoints.UpdateVehicleService), httpContent).Result;
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    return View("Error");
+            }
+            ViewBag.Message = "Vehicleservice has been updated";
+            return View("Success");
+        }
+
+        public ActionResult DeleteVehicleService()
+        {
+            return View();
+        }
+
         // SE TILL ATT DET INTE GÅR ATT BOKA EN SERVICE OM EN REDAN ÄR BOKAD
         // MÅSTE AVBOKA FÖRST; TA BORT BOKNINGEN HELT
         // LÄGGA TILL EN TABLE SOM HETER SERVICE HISTORY
         // TRIGGER SOM AUTOMATISKT ÖVERFÖR INFO OM IsServiceComplete==true
         // RADERAR FRÅN VEHICLE OCH VEHICLESERVICE
+        
+        // FIXA INLOGGNING OCH HEADERS
+
+        // SKAPA EN SIMPEL LOGGER OCH LÄGG TILL TRY CATCH
     }
 }

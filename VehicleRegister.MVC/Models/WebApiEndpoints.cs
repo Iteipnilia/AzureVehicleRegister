@@ -19,7 +19,9 @@ namespace VehicleRegister.MVC.Models
         public string DeleteVehicle => "https://localhost:44374/api/deletevehicle";
 
         public string CreateVehicleService => "https://localhost:44374/api/bookvehicleservice";
-        public string GetVehicleServices => HostName + "api/vehicleservices";
+        public string GetActiveVehicleServices => "https://localhost:44374/api/bookedvehicleservices";
+        public string GetFinnishedVehicleServices => "https://localhost:44374/api/finnishedvehicleservices";
+        public string GetVehiclesServiceHistory => "https://localhost:44374/api/vehicleservicehistory";
         public string GetVehicleService => HostName + "api/vehicleservice";
         public string UpdateVehicleService => HostName + "api/vehicleservice";
         public string DeleteVehicleService => HostName + "api/vehicleservice";

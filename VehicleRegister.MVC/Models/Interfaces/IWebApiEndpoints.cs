@@ -15,7 +15,9 @@ namespace VehicleRegister.MVC.Models.Interfaces
         string DeleteVehicle { get; }
 
         string CreateVehicleService { get; }
-        string GetVehicleServices { get; }
+        string GetActiveVehicleServices { get; }
+        string GetFinnishedVehicleServices { get; }
+        string GetVehiclesServiceHistory { get; }
         string GetVehicleService { get; }
         string UpdateVehicleService { get; }
         string DeleteVehicleService { get; }

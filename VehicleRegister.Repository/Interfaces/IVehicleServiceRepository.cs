@@ -11,7 +11,8 @@ namespace VehicleRegister.Repository.Interfaces
     {
         void Create(IVehicleService service, int vehicleId);
         IVehicleService GetById(int serviceId);
-        IEnumerable<IVehicleService> GetAllVehicleServices();
+        IEnumerable<IVehicleService> GetAllVehicleServices(bool finnished);
+        IEnumerable<IVehicleService> GetVehiclesServiceHistory(int vehicleID);
         IVehicleService Update(IVehicleService service);
         void DeleteService(int serviceId);
     }

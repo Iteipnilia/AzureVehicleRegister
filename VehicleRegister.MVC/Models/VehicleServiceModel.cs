@@ -23,12 +23,32 @@ namespace VehicleRegister.MVC.Models
     }
     public class DeleteVehicleServiceModel
     {
+        [Display(Name = "")]
+        public int VehicleServiceId { get; set; }
+        [Display(Name = "")]
+        public int VehicleId { get; set; }
+        [Display(Name = "")]
+        public int VehicleRegistrationNumber { get; set; }
 
     }
 
     public class UpdateVehicleServiceModel
     {
-
+        [Required]
+        [Display(Name = "Vehicleservice id:")]
+        public int VehicleServiceId { get; set; }
+        [Required]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
+        [Display(Name = "Date of Service:")]
+        public DateTime ServiceDate { get; set; }
+        [Required]
+        [StringLength(255)]
+        [Display(Name = "Type of service:")]
+        public string ServiceType { get; set; }
+        [Required]
+        [Display(Name = "Is service complete?:")]
+        public bool? IsServiceCompleted { get; set; }
     }
 
     public class GetVehicleServiceById
@@ -36,10 +56,22 @@ namespace VehicleRegister.MVC.Models
 
     }
 
-    public class GetAllVehicleServices
+    public class GetAllVehicleServicesModel
     {
-        //En för aktiva
-        //En för historia
-        //En för specifikt fordons historia
+        [Required]
+        [Display(Name = "Vehicleservice id:")]
+        public int VehicleServiceId { get; set; }
+        [Required]
+        [Display(Name = "Vehicle id:")]
+        public int VehicleId { get; set; }
+        [Required]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
+        [Display(Name = "Date of Service:")]
+        public DateTime ServiceDate { get; set; }
+        [Required]
+        [StringLength(255)]
+        [Display(Name = "Type of service:")]
+        public string ServiceType { get; set; }
     }
 }

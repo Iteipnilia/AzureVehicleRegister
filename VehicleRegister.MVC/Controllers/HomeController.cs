@@ -37,5 +37,10 @@ namespace VehicleRegister.MVC.Controllers
 
             return View();
         }
+
+        public ActionResult LoginUser()
+        {
+            return View();
+        }
     }
 }

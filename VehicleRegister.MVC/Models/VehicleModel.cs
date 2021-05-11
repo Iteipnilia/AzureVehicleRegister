@@ -12,6 +12,7 @@ namespace VehicleRegister.MVC.Models
         [Display(Name = "Vehicleid:")]
         public int VehicleId { get; set; }
         [Required]
+        [StringLength(6)]
         [Display(Name = "Registrationnumber:")]
         public string RegistrationNumber { get; set; }
         [Required]

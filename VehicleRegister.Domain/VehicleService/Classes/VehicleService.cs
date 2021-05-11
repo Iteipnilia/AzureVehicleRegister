@@ -22,12 +22,13 @@ namespace VehicleRegister.Domain.VehicleService.Classes
         public string ServiceType => serviceType;
         public bool IsServiceCompleted => isServiceCompleted;
 
-        public VehicleService(int serviceId, DateTime serviceDate, string serviceType, bool isServiceCompleted)
+        public VehicleService(int serviceId, IVehicle vehicle, DateTime serviceDate, string serviceType, bool isServiceCompleted)
         {
             this.serviceId = serviceId;
             this.serviceDate = serviceDate;
             this.serviceType = serviceType;
             this.isServiceCompleted = isServiceCompleted;
+            this.vehicle = vehicle;
         }
 
 

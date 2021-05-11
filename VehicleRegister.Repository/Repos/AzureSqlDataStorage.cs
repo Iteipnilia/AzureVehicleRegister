@@ -51,18 +51,19 @@ namespace VehicleRegister.Repository.Repos
         //=====VEHICLESERVICE=================================================================================
         public void Create(IVehicleService service, int vehicleId)
         {
-            if (vehicleId <1) { throw new NullReferenceException(); }
             var newVehicleService = new VehicleService
             {
                 VehicleServiceId = service.ServiceId,
                 VehicleId = vehicleId,
                 ServiceDate = service.ServiceDate,
-                VehicleService_Type = service.ServiceType
+                VehicleService_Type = service.ServiceType,
+                IsServiceCompleted = service.IsServiceCompleted
             };
 
             datacontext.VehicleServices.InsertOnSubmit(newVehicleService);
             datacontext.SubmitChanges();
         }// Måste se till att det inte går att boka tid om en tid redan finns
+        //===================================================================================================
 
         //==============\\
         //===>DELETE<===\\
@@ -86,6 +87,7 @@ namespace VehicleRegister.Repository.Repos
             datacontext.VehicleServices.DeleteOnSubmit(deleteService);
             datacontext.SubmitChanges();
         }
+        //======================================================================================================
 
         //===============\\
         //===>GET ALL<===\\
@@ -104,8 +106,6 @@ namespace VehicleRegister.Repository.Repos
                                                                 entity.Brand,
                                                                 (Double)entity.Weight_,
                                                                 entity.IsRegistered,
-                                                                null,
-                                                                //VehicleServiceGetByVehicleId(entity.VehicleId),
                                                                 (DateTime)entity.FirstUseInTraffic);
 
                 vehicleList.Add(vehicle);
@@ -114,35 +114,42 @@ namespace VehicleRegister.Repository.Repos
         }
 
         //=====VEHICLESERVICE=================================================================================
-        public IEnumerable<IVehicleService> GetAllVehicleServices()
+        public IEnumerable<IVehicleService> GetAllVehicleServices(bool finnishedServices)
         {
             var vehicleServiceList = new List<IVehicleService>();
             var vehicleServiceFactory = new VehicleServiceFactory();
             foreach (var entity in datacontext.VehicleServices.ToList())
             {
-                IVehicleService service = vehicleServiceFactory.CreateService(entity.VehicleServiceId,
-                                                                             (DateTime)entity.ServiceDate,
-                                                                              entity.VehicleService_Type,
-                                                                             (bool)entity.IsServiceCompleted);
-
-                vehicleServiceList.Add(service);
+                if(entity.IsServiceCompleted ==finnishedServices)
+                {
+                    IVehicleService service = vehicleServiceFactory.CreateService(entity.VehicleServiceId,
+                                                                                  GetVehicleById((int)entity.VehicleId),
+                                                                                 (DateTime)entity.ServiceDate,
+                                                                                  entity.VehicleService_Type,
+                                                                                 (bool)entity.IsServiceCompleted);
+                    vehicleServiceList.Add(service);
+                }
             }
             return vehicleServiceList;
         }
         //====================================================================================================
-        //SKE DEN VARA I INTERFACE?????
-        public IEnumerable<IVehicleService> GetAllVehicleServicesWithSpecificVehicleId(int vehicleId)
+
+        public IEnumerable<IVehicleService> GetVehiclesServiceHistory(int vehicleId)
         {
             var vehicleServiceList = new List<IVehicleService>();
             var vehicleServiceFactory = new VehicleServiceFactory();
             foreach (var entity in datacontext.VehicleServices.Where(c => c.VehicleId == vehicleId).ToList())
             {
-                IVehicleService service = vehicleServiceFactory.CreateService(entity.VehicleServiceId,
-                                                                             (DateTime)entity.ServiceDate,
-                                                                              entity.VehicleService_Type,
-                                                                             (bool)entity.IsServiceCompleted);
+                if(entity.IsServiceCompleted ==true)
+                {
+                    IVehicleService service = vehicleServiceFactory.CreateService(entity.VehicleServiceId,
+                                                                    GetVehicleById((int)entity.VehicleId),
+                                                                    (DateTime)entity.ServiceDate,
+                                                                    entity.VehicleService_Type,
+                                                                    (bool)entity.IsServiceCompleted);
 
-                vehicleServiceList.Add(service);
+                    vehicleServiceList.Add(service);
+                }
             }
             return vehicleServiceList;
         }
@@ -153,7 +160,7 @@ namespace VehicleRegister.Repository.Repos
         //=================\\
 
         //=====VEHICLE=======================================================================================
-        IVehicle IVehicleRepository.GetById(int vehicleId)
+        public IVehicle GetVehicleById(int vehicleId)
         {
             var getVehicle = datacontext.Vehicles.Where(v => v.VehicleId == vehicleId).FirstOrDefault();
             var vehicleFactory = new VehicleFactory();
@@ -165,8 +172,7 @@ namespace VehicleRegister.Repository.Repos
                                                             getVehicle.Brand,
                                                             (double)getVehicle.Weight_,
                                                             (bool)getVehicle.IsRegistered,
-                                                            null,//VehicleServiceGetByVehicleId(vehicleId),
-                                                            (DateTime)getVehicle.FirstUseInTraffic);// MÅSTE HÄMTA LISTA
+                                                            (DateTime)getVehicle.FirstUseInTraffic);
 
             return vehicle;
 
@@ -179,6 +185,7 @@ namespace VehicleRegister.Repository.Repos
             var vehicleServiceFactory = new VehicleServiceFactory();
 
             IVehicleService vehicleService = vehicleServiceFactory.CreateService(getVehicleService.VehicleServiceId,
+                                                                                GetVehicleById((int)getVehicleService.VehicleId),
                                                                                  (DateTime)getVehicleService.ServiceDate,
                                                                                  getVehicleService.VehicleService_Type,
                                                                                  (bool)getVehicleService.IsServiceCompleted);
@@ -187,12 +194,13 @@ namespace VehicleRegister.Repository.Repos
 
         //=====VEHICLESERVICE=================================================================================
         // SKA DEN VARA I INTERFACE?????
-        IVehicleService VehicleServiceGetByVehicleId(int vehicleId)
+        IVehicleService GetVehicleServiceByVehicleId(int vehicleId)
         {
             var getVehicleService = datacontext.VehicleServices.Where(s => s.VehicleServiceId == vehicleId).FirstOrDefault();
             var vehicleServiceFactory = new VehicleServiceFactory();
 
             IVehicleService vehicleService = vehicleServiceFactory.CreateService(getVehicleService.VehicleServiceId,
+                                                                                 GetVehicleById((int)getVehicleService.VehicleId),
                                                                                  (DateTime)getVehicleService.ServiceDate,
                                                                                  getVehicleService.VehicleService_Type,
                                                                                  (bool)getVehicleService.IsServiceCompleted);

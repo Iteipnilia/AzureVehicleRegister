@@ -41,7 +41,6 @@ namespace VehicleRegister.API.Controllers
                                                             request.Brand,
                                                             request.Weight,
                                                             request.IsRegistered,
-                                                            null,
                                                             request.FirstUseInTraffic);
 
             vehicleRepository_.Create(vehicle);
@@ -57,11 +56,12 @@ namespace VehicleRegister.API.Controllers
         {
             VehicleServiceFactory vehicleServiceFactory = new VehicleServiceFactory();
             IVehicleService vehicleService = vehicleServiceFactory.CreateService(request.VehicleServiceId,
+                                                                                 null,
                                                                                  request.ServiceDate,
                                                                                  request.ServiceType,
                                                                                  request.IsServiceCompleted);
 
-            vehicleServiceRepository_.Create(vehicleService, request.Vehicle.VehicleId);
+            vehicleServiceRepository_.Create(vehicleService,request.VehicleId);
 
             return Ok();
         }
@@ -86,7 +86,6 @@ namespace VehicleRegister.API.Controllers
                     VehicleType = vehicle.VehicleType,
                     Weight = vehicle.Weight,
                     YearlyFee = vehicle.YearlyFee,
-                    //BookedService = vehicle.BookedService,
                     FirstUseInTraffic = vehicle.FirstUseInTraffic
                 });
             }
@@ -94,13 +93,36 @@ namespace VehicleRegister.API.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = "Admin, SuperAdmin")]
+        //[Authorize(Roles = "Admin, SuperAdmin")]
         [HttpGet]
-        [Route("api/vehicleservices")]
-        public IHttpActionResult GetAllVehicleServices()
+        [AllowAnonymous]
+        [Route("api/bookedvehicleservices")]
+        public IHttpActionResult GetAllActiveVehicleServices()
         {
             var response = new GetAllVehicleServicesResponseDto();
-            foreach (var vehicleService in vehicleServiceRepository_.GetAllVehicleServices())
+            foreach (var vehicleService in vehicleServiceRepository_.GetAllVehicleServices(false))
+            {
+                response.VehicleServices.Add(new VehicleServiceDto()
+                {
+                    VehicleServiceId = vehicleService.ServiceId,
+                    VehicleId = vehicleService.Vehicle.VehicleId,
+                    ServiceDate = vehicleService.ServiceDate,
+                    ServiceType = vehicleService.ServiceType,
+                    IsServiceCompleted = vehicleService.IsServiceCompleted
+                });
+            }
+
+            return Ok(response);
+        }
+
+        //[Authorize(Roles = "Admin, SuperAdmin")]
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("api/finnishedvehicleservices")]
+        public IHttpActionResult GetAllFinnishedVehicleServices()
+        {
+            var response = new GetAllVehicleServicesResponseDto();
+            foreach (var vehicleService in vehicleServiceRepository_.GetAllVehicleServices(true))
             {
                 response.VehicleServices.Add(new VehicleServiceDto()
                 {
@@ -113,16 +135,16 @@ namespace VehicleRegister.API.Controllers
 
             return Ok(response);
         }
-   
+
         //=======GET=BY=ID====================================================
-        
+
         //[Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpGet]
         [AllowAnonymous]
         [Route("api/getvehicle")]
         public IHttpActionResult GetVehicleById(VehicleDto vehicle)
         {
-            var getvehicle = vehicleRepository_.GetById(vehicle.VehicleId);
+            var getvehicle = vehicleRepository_.GetVehicleById(vehicle.VehicleId);
 
             var respons = new VehicleDto()
             {
@@ -132,7 +154,6 @@ namespace VehicleRegister.API.Controllers
                 Brand = getvehicle.Brand,
                 VehicleType = getvehicle.VehicleType,
                 Weight = getvehicle.Weight,
-                //BookedService = vehicle.BookedService,
                 FirstUseInTraffic = getvehicle.FirstUseInTraffic
             };
             return Ok(respons);
@@ -153,6 +174,28 @@ namespace VehicleRegister.API.Controllers
                 IsServiceCompleted = vehicleService.IsServiceCompleted
             };
             return Ok(respons);
+        }
+
+        //[Authorize(Roles = "User, Admin, SuperAdmin")]
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("api/vehicleservicehistory")]
+        public IHttpActionResult GetVehicleServiceByVehicleId(VehicleDto vehicle)
+        {
+            var response = new GetAllVehicleServicesResponseDto();
+            foreach (var vehicleService in vehicleServiceRepository_.GetVehiclesServiceHistory(vehicle.VehicleId))
+            {
+                response.VehicleServices.Add(new VehicleServiceDto()
+                {
+                    VehicleId = vehicleService.Vehicle.VehicleId,
+                    VehicleServiceId = vehicleService.ServiceId,
+                    ServiceDate = vehicleService.ServiceDate,
+                    ServiceType = vehicleService.ServiceType,
+                    IsServiceCompleted = vehicleService.IsServiceCompleted
+                });
+            }
+
+            return Ok(response);
         }
 
         //=========UPDATE============================================================
