@@ -23,11 +23,16 @@ namespace VehicleRegister.MVC.Models
     }
     public class DeleteVehicleServiceModel
     {
-        [Display(Name = "")]
+        [Display(Name = "Vehicleservice id:")]
         public int VehicleServiceId { get; set; }
-        [Display(Name = "")]
+        [Required]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
+        [Display(Name = "Date of Service:")]
+        public DateTime ServiceDate { get; set; }
+        [Display(Name = "Vehicle id:")]
         public int VehicleId { get; set; }
-        [Display(Name = "")]
+        [Display(Name = "Vehicle registrationnnumber:")]
         public int VehicleRegistrationNumber { get; set; }
 
     }

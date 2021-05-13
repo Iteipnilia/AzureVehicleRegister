@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request\TokenDto.cs" />
     <Compile Include="Request\VehicleDto.cs" />
     <Compile Include="Request\VehicleServiceDto.cs" />
   </ItemGroup>

@@ -57,9 +57,8 @@ namespace VehicleRegister.MVC.Models
 
      public class UpdateVehicleModel
      {
-        [Editable(false)]
         [Display(Name = "Vehicleid:")]
-        public int VehicleId { get; set; }
+        public int VehicleId { get; }
         [Required]
         [Display(Name = "Registrationnumber:")]
         public string RegistrationNumber { get; set; }

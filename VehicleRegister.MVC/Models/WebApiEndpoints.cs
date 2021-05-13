@@ -25,6 +25,8 @@ namespace VehicleRegister.MVC.Models
         public string GetVehicleService => HostName + "api/vehicleservice";
         public string UpdateVehicleService => HostName + "api/vehicleservice";
         public string DeleteVehicleService => HostName + "api/vehicleservice";
+        public string GetToken => "https://localhost:44374/token";
+        public string LogInUser => "https://localhost:44374/api/values/getvalues";
 
     }
 }

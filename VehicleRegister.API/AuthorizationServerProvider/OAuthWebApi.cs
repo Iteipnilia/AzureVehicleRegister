@@ -16,6 +16,8 @@ namespace VehicleRegister.API.AuthorizationServerProvider
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
+            context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
+
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);
 
             using (var db = new AzureDbAccessDataContext())
@@ -32,12 +34,12 @@ namespace VehicleRegister.API.AuthorizationServerProvider
                     }
                     else
                     {
-                        context.SetError("Wrong Crendtials", "Provided username and password is incorrect");
+                        context.SetError("Wrong Credentials", "Provided username and password is incorrect");
                     }
                 }
                 else
                 {
-                    context.SetError("Wrong Crendtials", "Provided username and password is incorrect");
+                    context.SetError("Wrong Credentials", "Provided username and password is incorrect");
                 }
                 return;
             }

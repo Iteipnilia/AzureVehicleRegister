@@ -57,11 +57,7 @@ namespace VehicleRegister.MVC.Controllers
             {
                 var response = client.PostAsync(new Uri(_endpoints.CreateVehicle), httpContent).Result;
 
-                if (response == null)
-                {
-                    return View("About");
-                }
-                else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                     return View("Error");
             }
             return View("Success");
@@ -213,7 +209,8 @@ namespace VehicleRegister.MVC.Controllers
         }
 
         //=================================================================
-        //   VEHICLESERVICE CONTROLLERS
+        //
+        // VEHICLESERVICE CONTROLLERS
         // 
         //=================================================================
 
@@ -243,11 +240,7 @@ namespace VehicleRegister.MVC.Controllers
             {
                 var response = client.PostAsync(new Uri(_endpoints.CreateVehicleService), httpContent).Result;
 
-                if (response == null)
-                {
-                    return View("About");
-                }
-                else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
                     return View("Error");
             }
             
@@ -354,6 +347,8 @@ namespace VehicleRegister.MVC.Controllers
             return View();
         }
 
+        //==========UPDATE=VEHICLESERVICE=================================
+
         public ActionResult UpdateVehicleService(VehicleServiceModel vehicleService)
         {
             return View("UpdateVehicleService", vehicleService);
@@ -382,9 +377,32 @@ namespace VehicleRegister.MVC.Controllers
             return View("Success");
         }
 
+        //=======DELETE=VEHICLESERVICE===========================================
         public ActionResult DeleteVehicleService()
         {
             return View();
+        }
+        [HttpPost]
+        public ActionResult DeleteVehicleService(DeleteVehicleServiceModel vehicleService)
+        {
+            var request = new VehicleServiceDto
+            {
+                VehicleId= vehicleService.VehicleId,
+                VehicleServiceId = vehicleService.VehicleServiceId
+            };
+
+            string jsonDeleteVehicle = JsonConvert.SerializeObject(request);
+            var httpcontent = new StringContent(jsonDeleteVehicle, Encoding.UTF8, "application/json");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var response = client.PostAsync(new Uri(_endpoints.DeleteVehicleService), httpcontent).Result;
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    return View("Error");
+            }
+            ViewBag.Message = "Vehicleservice has been deleted";
+            return View("Success");
         }
 
         // SE TILL ATT DET INTE GÅR ATT BOKA EN SERVICE OM EN REDAN ÄR BOKAD

@@ -1,0 +1,50 @@
+﻿@model VehicleRegister.MVC.Models.DeleteVehicleServiceModel
+
+<h3>Are you sure you want to delete this service?</h3>
+<div>
+    <h4>Delete service for vehicle</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.VehicleServiceId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VehicleServiceId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ServiceDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ServiceDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VehicleId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VehicleId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VehicleRegistrationNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VehicleRegistrationNumber)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

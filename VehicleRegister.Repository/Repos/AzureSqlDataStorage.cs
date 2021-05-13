@@ -146,7 +146,7 @@ namespace VehicleRegister.Repository.Repos
                                                                     GetVehicleById((int)entity.VehicleId),
                                                                     (DateTime)entity.ServiceDate,
                                                                     entity.VehicleService_Type,
-                                                                    (bool)entity.IsServiceCompleted);
+                                                                    entity.IsServiceCompleted);
 
                     vehicleServiceList.Add(service);
                 }

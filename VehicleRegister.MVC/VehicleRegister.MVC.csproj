@@ -239,6 +239,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Interfaces\IWebApiEndpoints.cs" />
+    <Compile Include="Models\LogInUserModel.cs" />
     <Compile Include="Models\VehicleModel.cs" />
     <Compile Include="Models\VehicleServiceModel.cs" />
     <Compile Include="Models\WebApiEndpoints.cs" />
@@ -400,6 +401,8 @@
     <Content Include="Views\Vehicle\GetAllVehicleServices.cshtml" />
     <Content Include="Views\Vehicle\ServiceHistory.cshtml" />
     <Content Include="Views\Vehicle\UpdateVehicleService.cshtml" />
+    <Content Include="Views\Vehicle\DeleteVehicleService.cshtml" />
+    <Content Include="Views\Home\LogInUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">
@@ -432,9 +435,7 @@
       <Name>VehicleRegister.DTO</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\VehicleService\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

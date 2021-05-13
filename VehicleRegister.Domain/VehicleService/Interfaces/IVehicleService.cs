@@ -13,7 +13,7 @@ namespace VehicleRegister.Domain.VehicleService.Interfaces
         IVehicle Vehicle { get; }
         DateTime ServiceDate { get; }
         string ServiceType { get; }
-        bool IsServiceCompleted { get; }
+        bool? IsServiceCompleted { get; }
 
         void SetServiceCompleted();
 

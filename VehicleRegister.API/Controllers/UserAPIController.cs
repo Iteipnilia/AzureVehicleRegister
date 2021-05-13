@@ -8,6 +8,7 @@ using System.Web.Http;
 
 namespace VehicleRegister.API.Controllers
 {
+    [Authorize]
     public class UserAPIController : ApiController
     {
         //This method is For all types of role  

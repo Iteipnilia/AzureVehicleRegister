@@ -25,7 +25,7 @@ namespace VehicleRegister.Domain.Vehicle.Interfaces
 
         void UnregisterVehicle();
 
-        bool CheckIfServiceIsCompleted(IVehicleService service);
+        bool? CheckIfServiceIsCompleted(IVehicleService service);
 
         void AddNewBookedService(IVehicleService service);
 

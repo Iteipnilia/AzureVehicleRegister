@@ -56,7 +56,7 @@ namespace VehicleRegister.Domain.Vehicle.Classes
             isRegistered = false;
         }
 
-        public bool CheckIfServiceIsCompleted(IVehicleService service)
+        public bool? CheckIfServiceIsCompleted(IVehicleService service)
         {
             return service.IsServiceCompleted;
         }
