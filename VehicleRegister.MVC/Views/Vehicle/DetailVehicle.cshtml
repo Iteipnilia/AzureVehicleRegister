@@ -76,11 +76,19 @@
             @Html.DisplayFor(model => model.IsRegistered)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.BookedService.ServiceDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BookedService.ServiceDate)
+            @Html.ActionLink("Details", "GetVehicleServiceByVehicleId", new { Model.VehicleId })
+        </dd>
     </dl>
 
     <p>
         @Html.ActionLink("Servicehistory", "GetOneVehiclesServiceHistory", new { Model.VehicleId }) |
-        @Html.ActionLink("Book service", "BookVehicleService", new { Model.VehicleId }) |
+        @Html.ActionLink("Book a new service", "BookVehicleService", new { Model.VehicleId }) |
         @Html.ActionLink("Back to List", "GetAllVehicles")
     </p>
 </div>

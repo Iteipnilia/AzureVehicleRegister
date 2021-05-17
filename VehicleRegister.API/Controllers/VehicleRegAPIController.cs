@@ -28,9 +28,8 @@ namespace VehicleRegister.API.Controllers
 
         //========CREATE=================================================================
 
-        //[Authorize(Roles = "User, Admin, Superadmin")]
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpPost]
-        [AllowAnonymous]
         [Route("api/createvehicle")]
         public IHttpActionResult CreateVehicle(VehicleDto request)
         {
@@ -48,7 +47,7 @@ namespace VehicleRegister.API.Controllers
             return Ok();
         }
 
-        //[Authorize(Roles = "User, Admin, Superadmin")]
+        [Authorize(Roles = "User, Admin, Superadmin")]
         [HttpPost]
         [AllowAnonymous]
         [Route("api/bookvehicleservice")]
@@ -68,7 +67,7 @@ namespace VehicleRegister.API.Controllers
  
         //=======GET=ALL=====================================================
         
-        //[Authorize(Roles = "Admin, SuperaAmin")]
+        [Authorize(Roles = "Admin, SuperaAdmin")]
         [HttpGet]
         [AllowAnonymous]
         [Route("api/getallvehicles")]
@@ -93,7 +92,7 @@ namespace VehicleRegister.API.Controllers
             return Ok(response);
         }
 
-        //[Authorize(Roles = "Admin, SuperAdmin")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpGet]
         [AllowAnonymous]
         [Route("api/bookedvehicleservices")]
@@ -115,7 +114,7 @@ namespace VehicleRegister.API.Controllers
             return Ok(response);
         }
 
-        //[Authorize(Roles = "Admin, SuperAdmin")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpGet]
         [AllowAnonymous]
         [Route("api/finnishedvehicleservices")]
@@ -127,6 +126,7 @@ namespace VehicleRegister.API.Controllers
                 response.VehicleServices.Add(new VehicleServiceDto()
                 {
                     VehicleServiceId = vehicleService.ServiceId,
+                    VehicleId = vehicleService.Vehicle.VehicleId,
                     ServiceDate = vehicleService.ServiceDate,
                     ServiceType = vehicleService.ServiceType,
                     IsServiceCompleted = vehicleService.IsServiceCompleted
@@ -145,6 +145,7 @@ namespace VehicleRegister.API.Controllers
         public IHttpActionResult GetVehicleById(VehicleDto vehicle)
         {
             var getvehicle = vehicleRepository_.GetVehicleById(vehicle.VehicleId);
+            var getService = vehicleServiceRepository_.GetVehicleServiceByVehicleId(vehicle.VehicleId);
 
             var respons = new VehicleDto()
             {
@@ -154,7 +155,8 @@ namespace VehicleRegister.API.Controllers
                 Brand = getvehicle.Brand,
                 VehicleType = getvehicle.VehicleType,
                 Weight = getvehicle.Weight,
-                FirstUseInTraffic = getvehicle.FirstUseInTraffic
+                FirstUseInTraffic = getvehicle.FirstUseInTraffic,
+                BookedService = getService.ServiceDate
             };
             return Ok(respons);
         }
@@ -176,7 +178,23 @@ namespace VehicleRegister.API.Controllers
             return Ok(respons);
         }
 
-        //[Authorize(Roles = "User, Admin, SuperAdmin")]
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
+        [HttpGet]
+        [Route("api/vehicleservicebyvehicleid/{id}")]
+        public IHttpActionResult GetVehicleServiceByVehicleId(int vehicleId)
+        {
+            var vehicleService = vehicleServiceRepository_.GetVehicleServiceByVehicleId(vehicleId);
+
+            var respons = new VehicleServiceDto()
+            {
+                VehicleServiceId = vehicleService.ServiceId,
+                ServiceDate = vehicleService.ServiceDate,
+                ServiceType = vehicleService.ServiceType,
+            };
+            return Ok(respons);
+        }
+
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
         [AllowAnonymous]
         [HttpGet]
         [Route("api/vehicleservicehistory")]
@@ -222,7 +240,7 @@ namespace VehicleRegister.API.Controllers
   
         //=======DELETE======================================================================
         
-        [Authorize(Roles = "User, Admin, SuperAdmin")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpPut]
         [AllowAnonymous]
         [Route("api/deletevehicle/{id}")]
@@ -233,7 +251,7 @@ namespace VehicleRegister.API.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "User, Admin, SuperAdmin")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpPut]
         [Route("api/vehicleservice/{id}")]
         public IHttpActionResult DeleteVehicleService(int vehicleServiceId)

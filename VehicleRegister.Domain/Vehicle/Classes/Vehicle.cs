@@ -73,7 +73,5 @@ namespace VehicleRegister.Domain.Vehicle.Classes
         {
             serviceHistory.Add(service);
         }
-        // CompleteService() service.bookedService.Iscomplete=true)
-        // sätta funktionen där en admin kan ändra årlig kostnad. 
     }
 }

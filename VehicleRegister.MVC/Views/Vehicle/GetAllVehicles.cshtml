@@ -65,18 +65,19 @@
             @Html.DisplayFor(modelItem => item.IsRegistered)
         </td>
         <td>
-            @Html.ActionLink("Edit", "UpdateVehicle", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Edit", "UpdateVehicle", new{
+                                           item.VehicleId,
+                                           item.RegistrationNumber,
+                                           item.Model,
+                                           item.Brand,
+                                           item.VehicleType,
+                                           item.Weight,
+                                           item.YearlyFee,
+                                           item.FirstUseInTraffic,
+                                           item.IsRegistered}) |
            
-            @Html.ActionLink("Details", "DetailVehicle", 
-                    new { item.VehicleId, 
-                          item.RegistrationNumber, 
-                          item.Model, 
-                          item.Brand,
-                          item.VehicleType, 
-                          item.Weight, 
-                          item.YearlyFee, 
-                          item.FirstUseInTraffic, 
-                          item.IsRegistered}) |
+            @Html.ActionLink("Details", "GetVehicleById", new { item.VehicleId })|
+
             @Html.ActionLink("Delete", "DeleteVehicle", new { item.VehicleId, item.RegistrationNumber })
         </td>
     </tr>

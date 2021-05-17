@@ -13,6 +13,7 @@ namespace VehicleRegister.Repository.Interfaces
         IVehicleService GetById(int serviceId);
         IEnumerable<IVehicleService> GetAllVehicleServices(bool finnished);
         IEnumerable<IVehicleService> GetVehiclesServiceHistory(int vehicleID);
+        IVehicleService GetVehicleServiceByVehicleId(int vehicleId);
         IVehicleService Update(IVehicleService service);
         void DeleteService(int serviceId);
     }

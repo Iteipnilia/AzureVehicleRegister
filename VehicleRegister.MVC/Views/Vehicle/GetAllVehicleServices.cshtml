@@ -1,10 +1,13 @@
-﻿@model IEnumerable<VehicleRegister.MVC.Models.GetAllVehicleServicesModel>
+﻿@model IEnumerable<VehicleRegister.MVC.Models.GetVehicleServicesModel>
 
 <p>
     @Html.ActionLink("View servicehistory", "GetAllServiceHistories")
 </p>
 <table class="table">
     <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.VehicleServiceId)
+        </th>
         <th>
             @Html.DisplayNameFor(model => model.VehicleId)
         </th>
@@ -20,6 +23,9 @@
 @foreach (var item in Model) {
     <tr>
         <td>
+            @Html.DisplayFor(modelItem => item.VehicleServiceId)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.VehicleId)
         </td>
         <td>
@@ -30,8 +36,8 @@
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            @Html.ActionLink("Details", "GetVehicleServiceById", new { item.VehicleServiceId/* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "DeleteVehicleService", new { item.VehicleServiceId, item.ServiceDate, item.ServiceType })
         </td>
     </tr>
 }

@@ -51,18 +51,24 @@ namespace VehicleRegister.Repository.Repos
         //=====VEHICLESERVICE=================================================================================
         public void Create(IVehicleService service, int vehicleId)
         {
-            var newVehicleService = new VehicleService
-            {
-                VehicleServiceId = service.ServiceId,
-                VehicleId = vehicleId,
-                ServiceDate = service.ServiceDate,
-                VehicleService_Type = service.ServiceType,
-                IsServiceCompleted = service.IsServiceCompleted
-            };
+            var vehicle = datacontext.Vehicles.Where(x => x.VehicleId == vehicleId).SingleOrDefault();
 
-            datacontext.VehicleServices.InsertOnSubmit(newVehicleService);
-            datacontext.SubmitChanges();
-        }// Måste se till att det inte går att boka tid om en tid redan finns
+            if(vehicle.VehicleServiceId != null) { return; }
+
+            else
+            {
+                var newVehicleService = new VehicleService
+                {
+                    VehicleServiceId = service.ServiceId,
+                    VehicleId = vehicleId,
+                    ServiceDate = service.ServiceDate,
+                    VehicleService_Type = service.ServiceType,
+                    IsServiceCompleted = service.IsServiceCompleted
+                };
+                datacontext.VehicleServices.InsertOnSubmit(newVehicleService);
+                datacontext.SubmitChanges();
+            }
+        }
         //===================================================================================================
 
         //==============\\
@@ -185,16 +191,15 @@ namespace VehicleRegister.Repository.Repos
             var vehicleServiceFactory = new VehicleServiceFactory();
 
             IVehicleService vehicleService = vehicleServiceFactory.CreateService(getVehicleService.VehicleServiceId,
-                                                                                GetVehicleById((int)getVehicleService.VehicleId),
-                                                                                 (DateTime)getVehicleService.ServiceDate,
+                                                                                 GetVehicleById((int)getVehicleService.VehicleId),
+                                                                                (DateTime)getVehicleService.ServiceDate,
                                                                                  getVehicleService.VehicleService_Type,
-                                                                                 (bool)getVehicleService.IsServiceCompleted);
+                                                                                (bool)getVehicleService.IsServiceCompleted);
             return vehicleService;
         }
 
         //=====VEHICLESERVICE=================================================================================
-        // SKA DEN VARA I INTERFACE?????
-        IVehicleService GetVehicleServiceByVehicleId(int vehicleId)
+        public IVehicleService GetVehicleServiceByVehicleId(int vehicleId)
         {
             var getVehicleService = datacontext.VehicleServices.Where(s => s.VehicleServiceId == vehicleId).FirstOrDefault();
             var vehicleServiceFactory = new VehicleServiceFactory();

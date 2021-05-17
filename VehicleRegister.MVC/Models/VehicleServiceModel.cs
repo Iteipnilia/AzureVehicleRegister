@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
+
 
 namespace VehicleRegister.MVC.Models
 {
@@ -56,12 +54,7 @@ namespace VehicleRegister.MVC.Models
         public bool? IsServiceCompleted { get; set; }
     }
 
-    public class GetVehicleServiceById
-    {
-
-    }
-
-    public class GetAllVehicleServicesModel
+    public class GetVehicleServicesModel
     {
         [Required]
         [Display(Name = "Vehicleservice id:")]

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
@@ -22,6 +23,11 @@ namespace VehicleRegister.MVC.Controllers
             _endpoints = new WebApiEndpoints();
         }
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         public ActionResult LoginUser()
         {
             return View();
@@ -29,63 +35,52 @@ namespace VehicleRegister.MVC.Controllers
         [HttpPost]
         public ActionResult LoginUser(LogInUserModel login)
         {
+            if(login.UserName==null || login.Password==null)
+            {
+                throw new NullReferenceException();
+            }
+            
             var token = GetToken(login.UserName, login.Password);
             if (string.IsNullOrEmpty(token))
             {
-                return RedirectToAction("Error");
+                return View("Error");
             }
+
+            Session["tokenkey"] = token;
 
             using (HttpClient httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-                var response = httpClient.GetAsync(new Uri(_endpoints.LogInUser)).Result;
-                string message = response.Content.ReadAsStringAsync().Result;
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
                 
+                var response = httpClient.GetAsync(new Uri(_endpoints.LogInUser)).Result;
+                var message = response.Content.ReadAsStringAsync().Result;
+
                 if (response.IsSuccessStatusCode)
                 {
-                    ViewBag.Message(message);
-                    return RedirectToAction("Success", "Vehicle");
+                    return View("Index");
                 } 
             }
-
-            //Session["token"] = token;
-            return View("Index");
-        }
-        public ActionResult Index()
-        {
-            return View();
+            return View("Error");
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
 
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-
-        public string GetToken(string userName, string password)
+        public string GetToken(string username, string password)
         {
             using (var httpClient = new HttpClient())
             {
                 var userForm = new Dictionary<string, string>
                         {
-                            {"userName", userName },
-                            {"password", password },
+                            {"UserName", username },
+                            {"Password", password },
                             {"grant_type", "password" }
                         };
                 var content = new FormUrlEncodedContent(userForm);
                 var response = httpClient.PostAsync(_endpoints.GetToken, content).Result;
-                var jsonstring = response.Content.ReadAsStringAsync().Result;
-                var tokenstring = JsonConvert.DeserializeObject<TokenDto>(jsonstring);
+                var token = response.Content.ReadAsAsync<TokenDto>(new[] { new JsonMediaTypeFormatter() }).Result;
+                /*var jsonstring = response.Content.ReadAsStringAsync().Result;
+                var tokenstring = JsonConvert.DeserializeObject<TokenDto>(jsonstring);*/
 
-                return tokenstring.AccessToken;
+                return token.AccessToken;
             }
         }
     }

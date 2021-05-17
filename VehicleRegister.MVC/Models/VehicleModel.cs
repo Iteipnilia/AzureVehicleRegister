@@ -58,28 +58,21 @@ namespace VehicleRegister.MVC.Models
      public class UpdateVehicleModel
      {
         [Display(Name = "Vehicleid:")]
-        public int VehicleId { get; }
+        public int VehicleId { get; set; }
+        [Display(Name = "Model:")]
+        public string Model { get; set; }
+        [Display(Name = "Brand:")]
+        public string Brand { get; set; }
+        [Display(Name = "Vehicletype:")]
+        public string VehicleType { get; set; }
+        [Display(Name = "Weight:")]
+        public double Weight { get; set; }
+        [Display(Name = "Yearly fee:")]
+        public double YearlyFee { get; set; }
+
         [Required]
         [Display(Name = "Registrationnumber:")]
         public string RegistrationNumber { get; set; }
-        [Required]
-        [Display(Name = "Model:")]
-        public string Model { get; set; }
-        [Required]
-        [Display(Name = "Brand:")]
-        public string Brand { get; set; }
-        [Editable(false)]
-        [Display(Name = "Vehicletype:")]
-        public string VehicleType { get; set; }
-        [Editable(false)]
-        [Required]
-        [Display(Name = "Weight:")]
-        public double Weight { get; set; }
-        [Editable(false)]
-        [Display(Name = "Yearly fee:")]
-        public double YearlyFee { get; set; }
-        [Display(Name = "Booked service:")]
-        public IVehicleService BookedService { get; set; }
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]

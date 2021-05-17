@@ -17,7 +17,7 @@ namespace VehicleRegister.DTO.Request
         public double Weight { get; set; }
         public bool? IsRegistered { get; set; }
         public double YearlyFee { get; set; }
-        //public IVehicleService BookedService { get; set; }
+        public DateTime BookedService { get; set; }
         public DateTime FirstUseInTraffic { get; set; }
     }
     public class GetAllVehiclesResponseDto

@@ -1,0 +1,44 @@
+﻿@model VehicleRegister.MVC.Models.GetVehicleServicesModel
+
+<div>
+    <h4>Booked service:</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.VehicleServiceId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VehicleServiceId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VehicleId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VehicleId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ServiceDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ServiceDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ServiceType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ServiceType)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "UpdateVehicleService", new { Model.VehicleServiceId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
