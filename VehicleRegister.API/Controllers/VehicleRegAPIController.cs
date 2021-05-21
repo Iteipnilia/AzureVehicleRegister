@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Http;
 using VehicleRegister.Domain.Vehicle.Classes;
 using VehicleRegister.Domain.Vehicle.Interfaces;
@@ -61,6 +62,7 @@ namespace VehicleRegister.API.Controllers
                 return NotFound();
         }
 
+        //(NOT FINNISHED)
         [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpPost]
         [Route("api/bookvehicleservice2")]
@@ -68,13 +70,13 @@ namespace VehicleRegister.API.Controllers
         {
             VehicleServiceFactory vehicleServiceFactory = new VehicleServiceFactory();
             IVehicleService vehicleService = vehicleServiceFactory.CreateService(request.VehicleServiceId,
-                                                                                 (IVehicle)request.Vehicle,
-                                                                                 request.ServiceDate,
-                                                                                 request.ServiceType,
-                                                                                 request.IsServiceCompleted);
-            foreach(int id in request.VehicleIdList )
+                                                                                  (IVehicle)request.VehicleList,
+                                                                                  request.ServiceDate,
+                                                                                  request.ServiceType,
+                                                                                  request.IsServiceCompleted);
+            foreach(var vehicle in request.VehicleList )
             {
-                vehicleServiceRepository_.Create(vehicleService, id);
+                vehicleServiceRepository_.Create(vehicleService, vehicle.VehicleId);
             }
 
             return Ok();
@@ -194,6 +196,7 @@ namespace VehicleRegister.API.Controllers
             var respons = new VehicleServiceDto()
             {
                 VehicleServiceId = vehicleServiceRequest.ServiceId,
+                VehicleId = vehicleService.VehicleId,
                 ServiceDate = vehicleServiceRequest.ServiceDate,
                 ServiceType = vehicleServiceRequest.ServiceType,
                 IsServiceCompleted = vehicleServiceRequest.IsServiceCompleted
@@ -213,6 +216,7 @@ namespace VehicleRegister.API.Controllers
                 var respons = new VehicleServiceDto()
                 {
                     VehicleServiceId = vehicleService.ServiceId,
+                    VehicleId = vehicle.VehicleId,
                     ServiceDate = vehicleService.ServiceDate,
                     ServiceType = vehicleService.ServiceType,
                 };

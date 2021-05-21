@@ -187,7 +187,7 @@ namespace VehicleRegister.Repository.Repos
             else
             return null;
         }
-        //======VEHICLE=USING=REGNUMBER=============================================================================
+        //======VEHICLE=USING=REG-NUMBER=============================================================================
         public IVehicle GetVehicleByReg(string vehicleReg)
         {
             var getVehicle = datacontext.Vehicles.Where(v => v.RegestrationNumber == vehicleReg).FirstOrDefault();

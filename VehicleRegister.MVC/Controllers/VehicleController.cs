@@ -285,14 +285,14 @@ namespace VehicleRegister.MVC.Controllers
         }
         //(NOT FINNISHED)
         [HttpPost]
-        public ActionResult BookVehicleServiceForManyVehicles(VehicleServiceModel service)
+        public ActionResult BookVehicleServiceForManyVehicles(BookServiceForTwoVehicles service)
         {
-            List<int> vehicleIdList = new List<int>();
-            vehicleIdList.Add(service.VehicleId);
-            vehicleIdList.Add(service.VehicleId);
+            List<VehicleDto> vehicleList = new List<VehicleDto>();
+            vehicleList.Add(new VehicleDto { VehicleId=service.VehicleIdOne });
+            vehicleList.Add(new VehicleDto { VehicleId = service.VehicleIdTwo });
             var createVehicleServiceRequest = new VehicleServiceDto
             {
-                VehicleIdList = vehicleIdList,
+                VehicleList = vehicleList,
                 ServiceDate = service.ServiceDate,
                 ServiceType = service.ServiceType,
                 IsServiceCompleted = false
@@ -483,6 +483,7 @@ namespace VehicleRegister.MVC.Controllers
                     var result = new GetVehicleServicesModel
                     {
                         VehicleServiceId = responseDto.VehicleServiceId,
+                        VehicleId = responseDto.VehicleId,
                         ServiceDate = responseDto.ServiceDate,
                         ServiceType = responseDto.ServiceType
                     };
@@ -557,8 +558,5 @@ namespace VehicleRegister.MVC.Controllers
             ViewBag.Message = "Vehicleservice has been deleted";
             return View("Success");
         }
-        // SKAPA EN LOGGER OCH LÄGG TILL TRY CATCH
-
-        // SHOW BOOKED SERVICE ON VEHICLE DETAIL
     }
 }

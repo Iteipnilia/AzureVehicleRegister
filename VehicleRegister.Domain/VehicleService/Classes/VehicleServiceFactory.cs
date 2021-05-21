@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VehicleRegister.Domain.Vehicle.Interfaces;
 using VehicleRegister.Domain.VehicleService.Interfaces;
 
@@ -15,5 +12,15 @@ namespace VehicleRegister.Domain.VehicleService.Classes
             return new VehicleService(serviceId, vehicle, serviceDate, serviceType, isServiceComplete);
 
         }
+
+        public IVehicleService CreateServices(int serviceId, List<IVehicle> vehicles, DateTime serviceDate, string serviceType, bool? isServiceCompleted)
+        {
+            foreach (var vehicle in vehicles)
+            {
+                return new VehicleService(serviceId, vehicle, serviceDate, serviceType, isServiceCompleted);
+            }
+            return null;
+        }
     }
 }
+

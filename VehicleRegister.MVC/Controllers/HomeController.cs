@@ -1,12 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using VehicleRegister.DTO.Request;
 using VehicleRegister.MVC.Models;
@@ -37,30 +34,33 @@ namespace VehicleRegister.MVC.Controllers
         {
             if(login.UserName==null || login.Password==null)
             {
-                throw new NullReferenceException();
-            }
-            
-            var token = GetToken(login.UserName, login.Password);
-            if (string.IsNullOrEmpty(token))
-            {
+                ViewBag.Message = "You need to have a valid username and password";
                 return View("Error");
             }
-
-            Session["tokenkey"] = token;
-
-            using (HttpClient httpClient = new HttpClient())
+            else
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
-                
-                var response = httpClient.GetAsync(new Uri(_endpoints.LogInUser)).Result;
-                var message = response.Content.ReadAsStringAsync().Result;
-
-                if (response.IsSuccessStatusCode)
+                var token = GetToken(login.UserName, login.Password);
+                if (string.IsNullOrEmpty(token))
                 {
-                    return View("Index");
-                } 
+                    return View("Error");
+                }
+
+                Session["tokenkey"] = token;
+
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
+                    var response = httpClient.GetAsync(new Uri(_endpoints.LogInUser)).Result;
+                    var message = response.Content.ReadAsStringAsync().Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return View("Index");
+                    }
+                }
+                return View("Error");
             }
-            return View("Error");
         }
 
 
@@ -77,8 +77,6 @@ namespace VehicleRegister.MVC.Controllers
                 var content = new FormUrlEncodedContent(userForm);
                 var response = httpClient.PostAsync(_endpoints.GetToken, content).Result;
                 var token = response.Content.ReadAsAsync<TokenDto>(new[] { new JsonMediaTypeFormatter() }).Result;
-                /*var jsonstring = response.Content.ReadAsStringAsync().Result;
-                var tokenstring = JsonConvert.DeserializeObject<TokenDto>(jsonstring);*/
 
                 return token.AccessToken;
             }
