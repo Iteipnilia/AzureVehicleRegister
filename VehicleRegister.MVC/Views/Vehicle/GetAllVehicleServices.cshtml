@@ -35,9 +35,8 @@
             @Html.DisplayFor(modelItem => item.ServiceType)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
             @Html.ActionLink("Details", "GetVehicleServiceById", new { item.VehicleServiceId/* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "DeleteVehicleService", new { item.VehicleServiceId, item.ServiceDate, item.ServiceType })
+            @Html.ActionLink("Delete", "DeleteVehicleService", new { item.VehicleId, item.VehicleServiceId, item.ServiceDate, item.ServiceType })
         </td>
     </tr>
 }

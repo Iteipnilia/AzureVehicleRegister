@@ -1,0 +1,22 @@
+﻿@model VehicleRegister.MVC.Models.VehicleModel
+
+<div>
+    <h2>Sucess!</h2>
+    <h3>@ViewBag.Message</h3>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.VehicleId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VehicleId)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    <h4>Do you wish to book a service?</h4>
+    @Html.ActionLink("Book service", "BookVehicleService", new { Model.VehicleId }) |
+    @Html.ActionLink("Home", "Index", "Home")
+</p>

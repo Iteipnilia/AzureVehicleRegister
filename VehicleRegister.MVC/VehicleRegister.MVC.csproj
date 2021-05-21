@@ -389,18 +389,20 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Vehicle\Success.cshtml" />
     <Content Include="Views\Vehicle\CreateVehicle.cshtml" />
-    <Content Include="Views\Vehicle\GetVehicleById.cshtml" />
+    <Content Include="Views\Vehicle\GetVehicleUsingId.cshtml" />
     <Content Include="Views\Vehicle\GetAllVehicles.cshtml" />
     <Content Include="Views\Vehicle\DeleteVehicle.cshtml" />
     <Content Include="Views\Vehicle\DetailVehicle.cshtml" />
     <Content Include="Views\Vehicle\BookVehicleService.cshtml" />
     <Content Include="Views\Vehicle\GetAllVehicleServices.cshtml" />
-    <Content Include="Views\Vehicle\ServiceHistory.cshtml" />
     <Content Include="Views\Vehicle\UpdateVehicleService.cshtml" />
     <Content Include="Views\Vehicle\DeleteVehicleService.cshtml" />
     <Content Include="Views\Home\LogInUser.cshtml" />
-    <Content Include="Views\Vehicle\VehicleServiceDetail.cshtml" />
+    <Content Include="Views\Vehicle\DetailVehicleService.cshtml" />
     <Content Include="Views\Vehicle\UpdateVehicle.cshtml" />
+    <Content Include="Views\Vehicle\GetAllServiceHistories.cshtml" />
+    <Content Include="Views\Vehicle\VehicleCreated.cshtml" />
+    <Content Include="Views\Vehicle\VehicleDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">

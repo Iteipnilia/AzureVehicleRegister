@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<VehicleRegister.MVC.Models.VehicleModel>
 
 <p>
-    @Html.ActionLink("Search by registrationnumber", "GetVehicleById")
+    @Html.ActionLink("Search by id", "GetVehicleUsingId")
 </p>
 <table class="table">
     <tr>
@@ -76,7 +76,7 @@
                                            item.FirstUseInTraffic,
                                            item.IsRegistered}) |
            
-            @Html.ActionLink("Details", "GetVehicleById", new { item.VehicleId })|
+            @Html.ActionLink("Details", "DetailVehicle", new { item.VehicleId })|
 
             @Html.ActionLink("Delete", "DeleteVehicle", new { item.VehicleId, item.RegistrationNumber })
         </td>

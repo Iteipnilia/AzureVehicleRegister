@@ -14,6 +14,8 @@ namespace VehicleRegister.MVC.Controllers
     public class VehicleController : Controller
     {
         private readonly WebApiEndpoints _endpoints;
+        // The earliest year acceptet when booking a VehicleService
+        private readonly int minimumYear = 2021;
 
         public VehicleController()
         {
@@ -31,18 +33,18 @@ namespace VehicleRegister.MVC.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult CreateVehicle(VehicleModel collection)
+        public ActionResult CreateVehicle(VehicleModel addNewVehicle)
         {
             ViewBag.Message = "Vehicle has been created";
 
             var createVehicleRequest = new VehicleDto
             {
-                RegistrationNumber = collection.RegistrationNumber,
-                Model = collection.Model,
-                Brand = collection.Brand,
-                Weight = collection.Weight,
-                IsRegistered = collection.IsRegistered,
-                FirstUseInTraffic = collection.FirstUseInTraffic
+                RegistrationNumber = addNewVehicle.RegistrationNumber,
+                Model = addNewVehicle.Model,
+                Brand = addNewVehicle.Brand,
+                Weight = addNewVehicle.Weight,
+                IsRegistered = addNewVehicle.IsRegistered,
+                FirstUseInTraffic = addNewVehicle.FirstUseInTraffic
             };
 
             string jsonCreateVehicle = JsonConvert.SerializeObject(createVehicleRequest);
@@ -53,13 +55,15 @@ namespace VehicleRegister.MVC.Controllers
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
                 var response = client.PostAsync(new Uri(_endpoints.CreateVehicle), httpContent).Result;
 
-                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
                     return View("Error");
             }
+
             return View("Success");
         }
 
         //==============GET=ALL=VEHICLES===========================
+        [HttpGet]
         public ActionResult GetAllVehicles()
         {
             var vehicleList = new List<VehicleModel>();
@@ -72,7 +76,7 @@ namespace VehicleRegister.MVC.Controllers
                 {
                     var jsonGetVehicles = response.Content.ReadAsStringAsync().Result;
                     var responseDto = JsonConvert.DeserializeObject<GetAllVehiclesResponseDto>(jsonGetVehicles);
-
+                     
                     foreach (var vehicle in responseDto.Vehicles)
                     {
                         var result = new VehicleModel
@@ -92,28 +96,59 @@ namespace VehicleRegister.MVC.Controllers
                     ViewBag.Message = vehicleList;
                 }
             }
-            return View(vehicleList);
+            return View("GetAllVehicles", vehicleList);
         }
 
         //============GET=VEHICLE=BY=ID=======================================
-        public ActionResult GetVehicleById()
+        public ActionResult GetVehicleUsingId()
         {
-            return View("GetVehicleById");
+            return View();
         }
         [HttpPost]
-        public ActionResult GetVehicleById(VehicleModel vehiclebyid)
+        public ActionResult GetVehicleUsingId(GetVehicleByIdModel vehiclebyid)
         {
-            var vehicleList = new List<VehicleModel>();
-            var request = new VehicleDto{ VehicleId = vehiclebyid.VehicleId };
+            var vehicle= GetVehicleById(vehiclebyid);
+            if (vehicle == null) 
+                { ViewBag.Message="Vehicle could not be found";  return View("Error"); }
+
+            else
+                return View("DetailVehicle", vehicle);
+        }
+        
+        public ActionResult DetailVehicle(GetVehicleByIdModel vehiclebyid)
+        {
+            var vehicle = GetVehicleById(vehiclebyid);
+            //Compares default date against date from model
+            //If model date is set later than d1, res= -1.
+            DateTime d1 = new DateTime(0001, 01, 01, 0, 00, 00);
+            int res = DateTime.Compare(d1, vehicle.BookedService);
+
+            if (vehicle == null) { ViewBag.Message("Vehicle could not be found"); return View("Error"); }
+
+            //if res < 0 a service is booked
+            else if (res < 0)
+                return View("DetailVehicle", vehicle);
+
+            else
+                ViewBag.Message = "No booked service";
+                return View("VehicleDetail", vehicle);
+        }
+
+
+        public VehicleModel GetVehicleById(GetVehicleByIdModel vehiclebyid)
+        {
+            var request = new VehicleDto { VehicleId = vehiclebyid.VehicleId };
 
             string jsonrequest = JsonConvert.SerializeObject(request);
             var httpcontent = new StringContent(jsonrequest, Encoding.UTF8, "application/json");
 
             using (HttpClient client = new HttpClient())
             {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
                 var response = client.PostAsync(new Uri(_endpoints.GetVehicle), httpcontent).Result;
 
-                if (response != null)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var jsonGetVehicle = response.Content.ReadAsStringAsync().Result;
                     var responseDto = JsonConvert.DeserializeObject<VehicleDto>(jsonGetVehicle);
@@ -128,40 +163,36 @@ namespace VehicleRegister.MVC.Controllers
                         Weight = responseDto.Weight,
                         IsRegistered = responseDto.IsRegistered,
                         YearlyFee = responseDto.YearlyFee,
-                        FirstUseInTraffic = responseDto.FirstUseInTraffic
+                        FirstUseInTraffic = responseDto.FirstUseInTraffic,
+                        BookedService = responseDto.BookedService
                     };
-                    vehicleList.Add(result);
-                    ViewBag.Message = vehicleList;
+                    return result;
+
                 }
+                else { return null; }
             }
-            return View("DetailVehicle", vehicleList.First());
         }
 
         //==========DELETE=VEHICLE====================================
-        public ActionResult DeleteVehicle(VehicleModel vehicle)
+        public ActionResult DeleteVehicle(DeleteVehicleModel vehicle)
         {
             return View(vehicle);
         }
 
         [HttpPost]
-        public ActionResult DeleteVehicle(DeleteVehicleModel id)
+        public ActionResult DeleteVehicle(VehicleModel id)
         {
-            var request = new VehicleDto
-            {
-                VehicleId = id.VehicleId
-            };
+            var request = new VehicleDto{VehicleId = id.VehicleId};
 
             string jsonDeleteVehicle = JsonConvert.SerializeObject(request);
             var httpcontent = new StringContent(jsonDeleteVehicle, Encoding.UTF8, "application/json");
 
             using (HttpClient client = new HttpClient())
             {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
                 var response = client.PostAsync(new Uri(_endpoints.DeleteVehicle), httpcontent).Result;
-                if (response == null)
-                {
-                    return View("About");
-                }
-                else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
                     return View("Error");
             }
             ViewBag.Message = "Vehicle has been deleted";
@@ -183,6 +214,7 @@ namespace VehicleRegister.MVC.Controllers
                 RegistrationNumber = vehicle.RegistrationNumber,
                 Brand = vehicle.Brand,
                 Model = vehicle.Model,
+                Weight = vehicle.Weight,
                 FirstUseInTraffic = vehicle.FirstUseInTraffic,
                 IsRegistered = vehicle.IsRegistered
             };
@@ -191,24 +223,22 @@ namespace VehicleRegister.MVC.Controllers
            
             using (HttpClient client = new HttpClient())
             {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
                 var response = client.PostAsync(new Uri(_endpoints.UpdateVehicle), httpContent).Result;
 
-                if (response == null)
-                {
-                    return View("About");
-                }
-                else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
                     return View("Error");
             }
             ViewBag.Message = "Vehicle has been updated";
             return View("Success");
         }
 
-        //=================================================================//
-        //=================================================================//
-        //==================  VEHICLESERVICE CONTROLLERS  =================//
-        //=================================================================//
-        //=================================================================//
+        //==================================================================//
+        //==================================================================//
+        //==================  VEHICLESERVICE CONTROLLERS  ==================//
+        //==================================================================//
+        //==================================================================//
 
 
         //============BOOK=VEHICLESERVICE===============================
@@ -220,7 +250,11 @@ namespace VehicleRegister.MVC.Controllers
         [HttpPost]
         public ActionResult BookVehicleService(VehicleServiceModel service)
         {
-            //var createTempVehicle = new VehicleDto { VehicleId = service.VehicleId };
+            if (service.ServiceDate.Year < minimumYear)
+            {
+                ViewBag.Message = "You did not enter a valid date";
+                return View("Error");
+            }
             var createVehicleServiceRequest = new VehicleServiceDto
             {
                 VehicleId = service.VehicleId,
@@ -228,22 +262,60 @@ namespace VehicleRegister.MVC.Controllers
                 ServiceType = service.ServiceType,
                 IsServiceCompleted= false
             };
+            if (service.VehicleId > 0)
+            {
+                string jsonCreateVehicleService = JsonConvert.SerializeObject(createVehicleServiceRequest);
+                var httpContent = new StringContent(jsonCreateVehicleService, Encoding.UTF8, "application/json");
+
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
+                    var response = client.PostAsync(new Uri(_endpoints.CreateVehicleService), httpContent).Result;
+
+                    if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                        return View("Error");
+                }
+
+                ViewBag.Message = "Service has been booked";
+                return View("Success");
+            }
+            else
+                return View("Error");
+        }
+        //(NOT FINNISHED)
+        [HttpPost]
+        public ActionResult BookVehicleServiceForManyVehicles(VehicleServiceModel service)
+        {
+            List<int> vehicleIdList = new List<int>();
+            vehicleIdList.Add(service.VehicleId);
+            vehicleIdList.Add(service.VehicleId);
+            var createVehicleServiceRequest = new VehicleServiceDto
+            {
+                VehicleIdList = vehicleIdList,
+                ServiceDate = service.ServiceDate,
+                ServiceType = service.ServiceType,
+                IsServiceCompleted = false
+            };
 
             string jsonCreateVehicleService = JsonConvert.SerializeObject(createVehicleServiceRequest);
+           
             var httpContent = new StringContent(jsonCreateVehicleService, Encoding.UTF8, "application/json");
 
             using (HttpClient client = new HttpClient())
             {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
                 var response = client.PostAsync(new Uri(_endpoints.CreateVehicleService), httpContent).Result;
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                     return View("Error");
             }
-            
+
             ViewBag.Message("Service has been booked");
             return View("Success");
         }
-        
+
         //========GET=ALL=VEHICLESERVICES==================================
 
         // GET ALL ACTIVE SERVICES
@@ -253,6 +325,8 @@ namespace VehicleRegister.MVC.Controllers
             var vehicleServiceList = new List<GetVehicleServicesModel>();
             using (HttpClient client = new HttpClient())
             {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
                 var response = client.GetAsync(new Uri(_endpoints.GetActiveVehicleServices)).Result;
                 if (response != null)
                 {
@@ -277,11 +351,14 @@ namespace VehicleRegister.MVC.Controllers
         }
 
         // GET ALL FINNISHED SERVICES
+        [HttpGet]
         public ActionResult GetAllServiceHistories()
         {
             var vehicleServiceList = new List<GetVehicleServicesModel>();
             using (HttpClient client = new HttpClient())
             {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
                 var response = client.GetAsync(new Uri(_endpoints.GetFinnishedVehicleServices)).Result;
                 if (response != null)
                 {
@@ -290,37 +367,36 @@ namespace VehicleRegister.MVC.Controllers
 
                     foreach (var service in responseDto.VehicleServices)
                     {
-                        var result = new GetVehicleServicesModel
+                        var vehicleServices = new GetVehicleServicesModel
                         {
                             VehicleServiceId = service.VehicleServiceId,
-                            VehicleId = service.Vehicle.VehicleId,
+                            VehicleId = service.VehicleId,
                             ServiceDate = service.ServiceDate,
                             ServiceType = service.ServiceType
                         };
-                        vehicleServiceList.Add(result);
+                        vehicleServiceList.Add(vehicleServices);
                     }
                     ViewBag.Message = vehicleServiceList;
                 }
-                else { return View("Error"); }
             }
-            return View("ServiceHistory ", vehicleServiceList);
+            return View("GetAllServiceHistories", vehicleServiceList);
         }
 
         // GET SERVICEHISTORY FOR ONE VEHICLE
+        [HttpGet]
         public ActionResult GetOneVehiclesServiceHistory(VehicleModel vehicle)
         {
-            var request = new VehicleDto
-            {
-                VehicleId = vehicle.VehicleId
-            };
+            var request = new VehicleDto { VehicleId = vehicle.VehicleId };
+            var vehicleServiceList = new List<GetVehicleServicesModel>();
 
             string jsonrequest = JsonConvert.SerializeObject(request);
             var httpcontent = new StringContent(jsonrequest, Encoding.UTF8, "application/json");
 
-            var vehicleServiceList = new List<GetVehicleServicesModel>();
             using (HttpClient client = new HttpClient())
             {
-                var response = client.PostAsync(new Uri(_endpoints.GetVehiclesServiceHistory), httpcontent).Result;
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
+                var response = client.PostAsync(new Uri(_endpoints.GetVehiclesServiceHistory),httpcontent).Result;
                 if (response != null)
                 {
                     var jsonGetVehicleServices = response.Content.ReadAsStringAsync().Result;
@@ -328,20 +404,19 @@ namespace VehicleRegister.MVC.Controllers
 
                     foreach (var service in responseDto.VehicleServices)
                     {
-                        var result = new GetVehicleServicesModel
-                        { 
+                        var vehicleServices = new GetVehicleServicesModel
+                        {
                             VehicleServiceId = service.VehicleServiceId,
-                            VehicleId = service.Vehicle.VehicleId,
+                            VehicleId = service.VehicleId,
                             ServiceDate = service.ServiceDate,
                             ServiceType = service.ServiceType
                         };
-                        vehicleServiceList.Add(result);
+                        vehicleServiceList.Add(vehicleServices);
                     }
                     ViewBag.Message = vehicleServiceList;
                 }
-                else { return View("Error"); }
             }
-            return View("ServiceHistory", vehicleServiceList);
+            return View("GetAllServiceHistories", vehicleServiceList);
         }
 
         //=============GET=VEHICLESERVICE=BY=ID===============================================
@@ -356,6 +431,8 @@ namespace VehicleRegister.MVC.Controllers
 
             using (HttpClient client = new HttpClient())
             {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
                 var response = client.PostAsync(new Uri(_endpoints.GetVehicleService), httpcontent).Result;
 
                 if (response != null)
@@ -388,7 +465,15 @@ namespace VehicleRegister.MVC.Controllers
 
             using (HttpClient client = new HttpClient())
             {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
                 var response = client.PostAsync(new Uri(_endpoints.GetVehicleServiceByVehicleId), httpcontent).Result;
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.Message = "Could not find any appointments";
+                    return View("Error");
+                }
 
                 if (response != null)
                 {
@@ -410,16 +495,22 @@ namespace VehicleRegister.MVC.Controllers
 
         //==========UPDATE=VEHICLESERVICE=================================
 
-        public ActionResult UpdateVehicleService(VehicleServiceModel vehicleService)
+        public ActionResult UpdateVehicleService(UpdateVehicleServiceModel vehicleService)
         {
             return View("UpdateVehicleService", vehicleService);
         }
         [HttpPost]
-        public ActionResult UpdateVehicleService(UpdateVehicleServiceModel updateService)
+        public ActionResult UpdateVehicleService(VehicleServiceModel updateService)
         {
+            if(updateService.ServiceDate.Year < minimumYear)
+            {
+                ViewBag.Message = "You did not enter a valid date";
+                return View("Error");
+            }
             var vehicleServiceUpdateRequest = new VehicleServiceDto
             {
                 VehicleServiceId = updateService.VehicleServiceId,
+                VehicleId = updateService.VehicleId,
                 ServiceDate = updateService.ServiceDate,
                 ServiceType = updateService.ServiceType,
                 IsServiceCompleted = updateService.IsServiceCompleted
@@ -429,6 +520,8 @@ namespace VehicleRegister.MVC.Controllers
 
             using (HttpClient client = new HttpClient())
             {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
                 var response = client.PostAsync(new Uri(_endpoints.UpdateVehicleService), httpContent).Result;
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
@@ -439,24 +532,23 @@ namespace VehicleRegister.MVC.Controllers
         }
 
         //=======DELETE=VEHICLESERVICE===========================================
-        public ActionResult DeleteVehicleService()
+        public ActionResult DeleteVehicleService(DeleteVehicleServiceModel service)
         {
-            return View();
+            return View(service);
         }
         [HttpPost]
-        public ActionResult DeleteVehicleService(DeleteVehicleServiceModel vehicleService)
+        public ActionResult DeleteVehicleService(GetVehicleServicesModel deleteService)
         {
-            var request = new VehicleServiceDto
-            {
-                VehicleId= vehicleService.VehicleId,
-                VehicleServiceId = vehicleService.VehicleServiceId
-            };
+            var request = new VehicleServiceDto{ VehicleServiceId = deleteService.VehicleServiceId,
+                                                 VehicleId = deleteService.VehicleId};
 
-            string jsonDeleteVehicle = JsonConvert.SerializeObject(request);
-            var httpcontent = new StringContent(jsonDeleteVehicle, Encoding.UTF8, "application/json");
+            string jsonDeleteVehicleService = JsonConvert.SerializeObject(request);
+            var httpcontent = new StringContent(jsonDeleteVehicleService, Encoding.UTF8, "application/json");
 
             using (HttpClient client = new HttpClient())
             {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Session["tokenkey"].ToString());
+
                 var response = client.PostAsync(new Uri(_endpoints.DeleteVehicleService), httpcontent).Result;
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
@@ -465,16 +557,7 @@ namespace VehicleRegister.MVC.Controllers
             ViewBag.Message = "Vehicleservice has been deleted";
             return View("Success");
         }
-        
-        // LÄGGA TILL EN TABLE SOM HETER SERVICE HISTORY????????
-
-        // TRIGGER SOM AUTOMATISKT ÖVERFÖR INFO OM IsServiceComplete==true: TESTA
-        
-        // RADERAR FRÅN VEHICLE OCH VEHICLESERVICE
-        
-        // SKAPA EN SIMPEL LOGGER OCH LÄGG TILL TRY CATCH
-
-        // FIXA GETALL SERVICE HISTORIES
+        // SKAPA EN LOGGER OCH LÄGG TILL TRY CATCH
 
         // SHOW BOOKED SERVICE ON VEHICLE DETAIL
     }

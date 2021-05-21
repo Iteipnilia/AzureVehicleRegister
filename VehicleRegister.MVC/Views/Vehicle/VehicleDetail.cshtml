@@ -1,6 +1,5 @@
 ﻿@model VehicleRegister.MVC.Models.VehicleModel
 
-
 <div>
     <h4>Vehicle</h4>
     <hr />
@@ -82,8 +81,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.BookedService)
-            @Html.ActionLink("Details", "GetVehicleServiceByVehicleId", new { Model.VehicleId })
+            @ViewBag.Message
         </dd>
     </dl>
 
@@ -105,5 +103,3 @@
         @Html.ActionLink("Back to List", "GetAllVehicles")
     </p>
 </div>
-
-

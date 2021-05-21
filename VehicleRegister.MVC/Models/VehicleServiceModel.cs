@@ -6,6 +6,7 @@ namespace VehicleRegister.MVC.Models
 {
     public class VehicleServiceModel
     {
+        public int VehicleServiceId { get; set; }
         [Required]
         [Display(Name = "Vehicle id:")]
         public int VehicleId { get; set; }
@@ -18,7 +19,29 @@ namespace VehicleRegister.MVC.Models
         [StringLength(255)]
         [Display(Name = "Describe the type of service:")]
         public string ServiceType { get; set; }
+        [Required]
+        public bool? IsServiceCompleted { get; set; }
     }
+
+    public class BookServiceForTwoVehicles
+    {
+        [Required]
+        [Display(Name = "Vehicle id:")]
+        public int VehicleIdOne { get; set; }
+        [Required]
+        [Display(Name = "Vehicle id:")]
+        public int VehicleIdTwo { get; set; }
+        [Required]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
+        [Display(Name = "Date of Service:")]
+        public DateTime ServiceDate { get; set; }
+        [Required]
+        [StringLength(255)]
+        [Display(Name = "Describe the type of service:")]
+        public string ServiceType { get; set; }
+    }
+
     public class DeleteVehicleServiceModel
     {
         [Display(Name = "Vehicleservice id:")]

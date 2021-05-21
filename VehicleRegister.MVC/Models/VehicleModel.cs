@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-using VehicleRegister.Domain.VehicleService.Interfaces;
+
 
 namespace VehicleRegister.MVC.Models
 {
@@ -28,8 +25,11 @@ namespace VehicleRegister.MVC.Models
         public double Weight { get; set; }
         [Display(Name = "Yearly fee:")]
         public double YearlyFee { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         [Display(Name = "Booked service:")]
-        public VehicleServiceModel BookedService { get; set; }
+        public DateTime BookedService { get; set; }
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
@@ -37,10 +37,16 @@ namespace VehicleRegister.MVC.Models
         public DateTime FirstUseInTraffic { get; set; }
         [Required]
         [Display(Name = "Is vehicle registered:")]
-        public bool? IsRegistered { get; set; }
+        public bool? IsRegistered  { get; set; }
+
+
+        public static string ToFriendlyString(bool b)
+        {
+            return b ? "Yes" : "No";
+        }
 
     }
-    
+
     public class DeleteVehicleModel
      {       
         [Display(Name = "Vehicle Id:")]

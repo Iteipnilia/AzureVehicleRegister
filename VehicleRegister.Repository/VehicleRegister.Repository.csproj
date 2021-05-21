@@ -93,6 +93,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AzureDbAccess.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IVehicleRepository.cs" />
     <Compile Include="Interfaces\IVehicleServiceRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,6 +102,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Repos\AzureDatabaseLogger.cs" />
     <Compile Include="Repos\AzureSqlDataStorage.cs" />
   </ItemGroup>
   <ItemGroup />

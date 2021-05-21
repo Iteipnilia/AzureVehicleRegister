@@ -6,13 +6,13 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>VehicleServiceModel</h4>
+        <h4>Book a service:</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.VehicleId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DisplayFor(model => model.VehicleId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.VehicleId, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.VehicleId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -42,7 +42,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Home", "Index", "Home")
 </div>
 
 @section Scripts {

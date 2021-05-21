@@ -19,14 +19,15 @@ namespace VehicleRegister.MVC.Models
         public string GetActiveVehicleServices => "https://localhost:44374/api/bookedvehicleservices";
         public string GetFinnishedVehicleServices => "https://localhost:44374/api/finnishedvehicleservices";
         public string GetVehiclesServiceHistory => "https://localhost:44374/api/vehicleservicehistory";
-        public string GetVehicleService => HostName + "api/vehicleservice";
-        public string GetVehicleServiceByVehicleId => HostName + "api/vehicleservicebyvehicleid";
+        public string GetVehicleService => "https://localhost:44374/api/vehicleservice";
+        public string GetVehicleServiceByVehicleId => "https://localhost:44374/api/vehicleservicebyvehicleid";
         
-        public string UpdateVehicleService => HostName + "api/vehicleservice";
-        public string DeleteVehicleService => HostName + "api/vehicleservice";
+        public string UpdateVehicleService => "https://localhost:44374/api/updatevehicleservice";
+        public string DeleteVehicleService => "https://localhost:44374/api/deletevehicleservice";
         
         public string GetToken => "https://localhost:44374/token";
         public string LogInUser => "https://localhost:44374/api/values/getvalues";
+
 
     }
 }

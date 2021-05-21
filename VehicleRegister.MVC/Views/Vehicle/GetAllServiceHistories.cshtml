@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<VehicleRegister.MVC.Models.GetVehicleServicesModel>
 
 <p>
-    <h4>Servicehistory:</h4>
+    <h3>Finnished vehicleservices</h3>
 </p>
 <table class="table">
     <tr>
@@ -35,7 +35,6 @@
             @Html.DisplayFor(modelItem => item.ServiceType)
         </td>
         <td>
-            @Html.ActionLink("Vehicle", "Details", new { /* id=item.PrimaryKey */ }) |
             @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
         </td>
     </tr>

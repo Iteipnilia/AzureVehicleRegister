@@ -10,6 +10,7 @@ namespace VehicleRegister.DTO.Request
     {
         public int VehicleServiceId { get; set; }
         public int VehicleId { get; set; }
+        public IList<int> VehicleIdList { get; set; }
         public VehicleDto Vehicle { get; set; }
         public DateTime ServiceDate { get; set; }
         public string ServiceType { get; set; }

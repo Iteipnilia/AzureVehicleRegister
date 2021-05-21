@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VehicleRegister.Domain.Vehicle.Classes;
 using VehicleRegister.Domain.Vehicle.Interfaces;
 using VehicleRegister.Domain.VehicleService.Classes;
@@ -16,12 +14,12 @@ namespace VehicleRegister.Repository.Repos
     {
         private readonly AzureDbAccessDataContext datacontext;
 
-        //private readonly ILogger _logger;
+        //private readonly ILogger logger;
 
         public AzureSqlDataStorage()
         {
             datacontext = new AzureDbAccessDataContext();
-            //_logger = new AzureDatabaseLogger();
+            //logger = new AzureDatabaseLogger();
 
         }
 
@@ -49,11 +47,12 @@ namespace VehicleRegister.Repository.Repos
         }
 
         //=====VEHICLESERVICE=================================================================================
-        public void Create(IVehicleService service, int vehicleId)
+        public bool Create(IVehicleService service, int vehicleId)
         {
             var vehicle = datacontext.Vehicles.Where(x => x.VehicleId == vehicleId).SingleOrDefault();
 
-            if(vehicle.VehicleServiceId != null) { return; }
+            if (vehicle == null) { return false; }
+            else if(vehicle.VehicleServiceId != null) { return false; }
 
             else
             {
@@ -67,6 +66,8 @@ namespace VehicleRegister.Repository.Repos
                 };
                 datacontext.VehicleServices.InsertOnSubmit(newVehicleService);
                 datacontext.SubmitChanges();
+
+                return true;
             }
         }
         //===================================================================================================
@@ -132,7 +133,7 @@ namespace VehicleRegister.Repository.Repos
                                                                                   GetVehicleById((int)entity.VehicleId),
                                                                                  (DateTime)entity.ServiceDate,
                                                                                   entity.VehicleService_Type,
-                                                                                 (bool)entity.IsServiceCompleted);
+                                                                                  entity.IsServiceCompleted);
                     vehicleServiceList.Add(service);
                 }
             }
@@ -171,17 +172,41 @@ namespace VehicleRegister.Repository.Repos
             var getVehicle = datacontext.Vehicles.Where(v => v.VehicleId == vehicleId).FirstOrDefault();
             var vehicleFactory = new VehicleFactory();
 
+            if(getVehicle !=null)
+            {
+                IVehicle vehicle = vehicleFactory.CreateVehicle(vehicleId,
+                                                getVehicle.RegestrationNumber,
+                                                getVehicle.Model,
+                                                getVehicle.Brand,
+                                                (double)getVehicle.Weight_,
+                                                getVehicle.IsRegistered,
+                                                (DateTime)getVehicle.FirstUseInTraffic);
+                return vehicle;
+            }
 
-            IVehicle vehicle = vehicleFactory.CreateVehicle(vehicleId,
-                                                            getVehicle.RegestrationNumber,
-                                                            getVehicle.Model,
-                                                            getVehicle.Brand,
-                                                            (double)getVehicle.Weight_,
-                                                            (bool)getVehicle.IsRegistered,
-                                                            (DateTime)getVehicle.FirstUseInTraffic);
+            else
+            return null;
+        }
+        //======VEHICLE=USING=REGNUMBER=============================================================================
+        public IVehicle GetVehicleByReg(string vehicleReg)
+        {
+            var getVehicle = datacontext.Vehicles.Where(v => v.RegestrationNumber == vehicleReg).FirstOrDefault();
+            var vehicleFactory = new VehicleFactory();
 
-            return vehicle;
+            if (getVehicle != null)
+            {
+                IVehicle vehicle = vehicleFactory.CreateVehicle(getVehicle.VehicleId,
+                                                getVehicle.RegestrationNumber,
+                                                getVehicle.Model,
+                                                getVehicle.Brand,
+                                                (double)getVehicle.Weight_,
+                                                getVehicle.IsRegistered,
+                                                (DateTime)getVehicle.FirstUseInTraffic);
+                return vehicle;
+            }
 
+            else
+                return null;
         }
 
         //=====VEHICLESERVICE=================================================================================
@@ -194,22 +219,27 @@ namespace VehicleRegister.Repository.Repos
                                                                                  GetVehicleById((int)getVehicleService.VehicleId),
                                                                                 (DateTime)getVehicleService.ServiceDate,
                                                                                  getVehicleService.VehicleService_Type,
-                                                                                (bool)getVehicleService.IsServiceCompleted);
+                                                                                 getVehicleService.IsServiceCompleted);
             return vehicleService;
         }
 
         //=====VEHICLESERVICE=================================================================================
         public IVehicleService GetVehicleServiceByVehicleId(int vehicleId)
         {
-            var getVehicleService = datacontext.VehicleServices.Where(s => s.VehicleServiceId == vehicleId).FirstOrDefault();
+            var getVehicleService =  datacontext.VehicleServices.Where(s => s.VehicleId == vehicleId).Where(f => f.IsServiceCompleted ==false).FirstOrDefault();
             var vehicleServiceFactory = new VehicleServiceFactory();
+            
+            if(getVehicleService !=null )
+            {
+                IVehicleService vehicleService = vehicleServiceFactory.CreateService(getVehicleService.VehicleServiceId,
+                                                                     GetVehicleById((int)getVehicleService.VehicleId),
+                                                                     (DateTime)getVehicleService.ServiceDate,
+                                                                     getVehicleService.VehicleService_Type,
+                                                                     getVehicleService.IsServiceCompleted);
 
-            IVehicleService vehicleService = vehicleServiceFactory.CreateService(getVehicleService.VehicleServiceId,
-                                                                                 GetVehicleById((int)getVehicleService.VehicleId),
-                                                                                 (DateTime)getVehicleService.ServiceDate,
-                                                                                 getVehicleService.VehicleService_Type,
-                                                                                 (bool)getVehicleService.IsServiceCompleted);
-            return vehicleService;
+                return vehicleService;
+            }
+            else return null;
         }
 
 
@@ -219,7 +249,7 @@ namespace VehicleRegister.Repository.Repos
         //==============\\
 
         //=====VEHICLE=======================================================================================
-        public IVehicle Update(IVehicle vehicle)// MÅSTE DEN RETURNERA???
+        public void Update(IVehicle vehicle)
         {
             var vehicleUpdate = datacontext.Vehicles.Where(v => v.VehicleId == vehicle.VehicleId).Single();
 
@@ -228,14 +258,14 @@ namespace VehicleRegister.Repository.Repos
             vehicleUpdate.Brand = vehicle.Brand;
             vehicleUpdate.Weight_ = (Decimal)vehicle.Weight;
             vehicleUpdate.IsRegistered = vehicle.IsRegistered;
+            vehicleUpdate.FirstUseInTraffic= vehicle.FirstUseInTraffic;
 
             datacontext.SubmitChanges();
 
-            return (IVehicle)vehicleUpdate;
         }
 
         //=====VEHICLESERVICE=================================================================================
-        public IVehicleService Update(IVehicleService service)
+        public void Update(IVehicleService service)
         {
             var serviceUpdate = datacontext.VehicleServices.Where(s => s.VehicleServiceId == service.ServiceId).Single();
 
@@ -245,7 +275,16 @@ namespace VehicleRegister.Repository.Repos
 
             datacontext.SubmitChanges();
 
-            return (IVehicleService)serviceUpdate;
+        }
+
+        public void DeleteBookedService(int vehicle)
+        {
+            var vehicleUpdate = datacontext.Vehicles.Where(s => s.VehicleId == vehicle).Single();
+
+            vehicleUpdate.VehicleServiceId = null;
+
+            datacontext.SubmitChanges();
+
         }
     }
 }
